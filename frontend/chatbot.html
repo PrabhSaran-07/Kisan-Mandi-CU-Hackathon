@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot - Kisan Mandi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/openai@3.1.0/index.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="logo"> Kisan Mandi</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="chatbot.html">AI Chatbot</a></li>
+                <li><a href="prices.html">Prices</a></li>
+                <li id="userGreeting" style="color: #2ecc71;"></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="max-width: 700px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-header"> AI Agricultural Advisor</div>
+                <p>Ask me anything about farming, crop prices, market trends, or using the platform!</p>
+            </div>
+
+            <!-- Chat Interface -->
+            <div style="background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 600px; margin-bottom: 2rem;">
+                
+                <!-- Messages Display -->
+                <div id="chatMessages" style="flex: 1; overflow-y: auto; margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                    <div style="text-align: center; color: #95a5a6;">
+                        <p>Welcome! Type your question below.</p>
+                        <p style="font-size: 0.9rem;"> Ask about farming, crops, prices, or marketplace features.</p>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div style="display: flex; gap: 0.5rem;">
+                    <input 
+                        type="text" 
+                        id="userInput" 
+                        placeholder="Type your question..." 
+                        style="flex: 1; padding: 1rem; border: 1px solid #bdc3c7; border-radius: 5px;"
+                        onkeypress="if(event.key === 'Enter') sendMessage();"
+                    >
+                    <button class="btn btn-primary" onclick="sendMessage()" style="padding: 1rem 2rem;">Send</button>
+                </div>
+
+                <div id="loadingIndicator" style="display: none; text-align: center; margin-top: 1rem; color: #95a5a6;">
+                    <p>AI is thinking... </p>
+                </div>
+            </div>
+
+            <!-- Quick Questions -->
+            <div class="card">
+                <h3>Quick Questions</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="askQuick('What\'s the current wheat price?')" style="text-align: left; white-space: normal; height: auto;">
+                         What's the current wheat price?
+                    </button>
+                    <button class="btn btn-secondary" onclick="askQuick('How do I sell my crops?')" style="text-align: left; white-space: normal; height: auto;">
+                         How do I sell my crops?
+                    </button>
+                    <button class="btn btn-secondary" onclick="askQuick('Best time to plant rice?')" style="text-align: left; white-space: normal; height: auto;">
+                         Best time to plant rice?
+                    </button>
+                    <button class="btn btn-secondary" onclick="askQuick('How does the payment work?')" style="text-align: left; white-space: normal; height: auto;">
+                         How does payment work?
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Kisan Mandi. Powered by OpenAI API for Agricultural Intelligence</p>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let currentUser = null;
+
+        // Initialize
+        async function initChatbot() {
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userStr);
+            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
+
+            // Show welcome message
+            addMessage('bot', 'Hello! 👋 I\'m your AI Agricultural Advisor. I can help you with farming tips, crop prices, market trends, and questions about our Kisan Mandi platform. What would you like to know?', false);
+        }
+
+        function addMessage(sender, message, isHtml = false) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.style.marginBottom = '1rem';
+            messageDiv.style.padding = '1rem';
+            messageDiv.style.borderRadius = '5px';
+            messageDiv.style.maxWidth = '80%';
+
+            if (sender === 'user') {
+                messageDiv.style.backgroundColor = '#2ecc71';
+                messageDiv.style.color = 'white';
+                messageDiv.style.marginLeft = 'auto';
+                messageDiv.style.textAlign = 'right';
+            } else {
+                messageDiv.style.backgroundColor = 'white';
+                messageDiv.style.borderLeft = '4px solid #2ecc71';
+            }
+
+            if (isHtml) {
+                messageDiv.innerHTML = message;
+            } else {
+                messageDiv.textContent = message;
+            }
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        message: message,
+                        type: 'general'
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById('loadingIndicator').style.display = 'none';
+
+                // Add bot response
+                addMessage('bot', data.bot_response || 'Sorry, I couldn\'t process that. Please try again.');
+
+            } catch (error) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                addMessage('bot', '❌ Error: ' + error.message);
+            }
+        }
+
+        function askQuick(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize on load
+        initChatbot();
+    </script>
+</body>
+</html>

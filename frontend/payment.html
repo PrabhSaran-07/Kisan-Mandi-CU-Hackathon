@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Kisan Mandi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card" style="max-width: 600px; margin: 3rem auto;">
+            <div class="card-header" style="text-align: center;">💳 Payment Gateway</div>
+
+            <div id="alertContainer"></div>
+
+            <div id="paymentForm">
+                <h3>Order Summary</h3>
+                <p><strong>Transaction ID:</strong> <span id="transactionId">-</span></p>
+                <p><strong>Total Amount:</strong> <span id="totalAmount" style="color: #2ecc71; font-size: 1.5rem; font-weight: bold;">₹0.00</span></p>
+
+                <h3 style="margin-top: 2rem;">Payment Method</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="padding: 1rem; border: 2px solid #bdc3c7; border-radius: 5px; cursor: pointer; text-align: center;" onclick="selectPaymentMethod('upi')">
+                        <div style="font-size: 2rem;">📱</div>
+                        <div>UPI</div>
+                    </div>
+                    <div style="padding: 1rem; border: 2px solid #bdc3c7; border-radius: 5px; cursor: pointer; text-align: center;" onclick="selectPaymentMethod('card')">
+                        <div style="font-size: 2rem;">💳</div>
+                        <div>Card/Net Banking</div>
+                    </div>
+                </div>
+
+                <!-- Mock Razorpay Form -->
+                <div id="razorpayForm" style="display: none;">
+                    <div style="background: #f0f0f0; padding: 2rem; border-radius: 8px; text-align: center; margin: 2rem 0;">
+                        <h3>🔒 Razorpay Test Payment</h3>
+                        <p style="margin: 1rem 0; color: #95a5a6;">This is a demo payment screen. In production, Razorpay would handle the payment.</p>
+                        <p><strong>Test Card Numbers:</strong></p>
+                        <ul style="text-align: left; display: inline-block; color: #7f8c8d;">
+                            <li>4111 1111 1111 1111 (Success)</li>
+                            <li>4000 0000 0000 0002 (Decline)</li>
+                        </ul>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #95a5a6;">Expiry: Any future date | CVV: Any 3 digits</p>
+                    </div>
+
+                    <form id="paymentDetailsForm">
+                        <div class="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" value="Demo User" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="4111 1111 1111 1111" value="4111111111111111" required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label>MM/YY</label>
+                                <input type="text" placeholder="12/25" value="12/25" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" value="123" required>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" style="width: 100%;" onclick="processPayment()">Pay Now with Razorpay</button>
+                    </form>
+                </div>
+
+                <div id="upiForm" style="display: none;">
+                    <div class="form-group">
+                        <label>UPI ID (e.g., user@okhdfcbank)</label>
+                        <input type="text" id="upiId" placeholder="user@okhdfcbank" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" style="width: 100%;" onclick="processUPI()">Pay with UPI</button>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: #e8f5e9; border-radius: 5px; border-left: 4px solid #2ecc71;">
+                    <p style="font-size: 0.9rem; color: #558b2f;"><strong>💡 Demo Info:</strong> This payment interface is for demonstration. In production, actual Razorpay integration would process real payments.</p>
+                </div>
+            </div>
+
+            <div id="successMessage" style="display: none; text-align: center;">
+                <div style="font-size: 3rem; color: #2ecc71; margin: 2rem 0;">✅</div>
+                <h2 style="color: #2ecc71;">Payment Successful!</h2>
+                <p>Your order has been confirmed.</p>
+                <p><strong>Transaction ID:</strong> <span id="successTransactionId">-</span></p>
+                <p style="margin-top: 2rem; color: #95a5a6; font-size: 0.9rem;">You will receive a confirmation email shortly.</p>
+                <button class="btn btn-primary" style="margin-top: 2rem;" onclick="redirectToDashboard()">Back to Dashboard</button>
+            </div>
+
+            <div id="failureMessage" style="display: none; text-align: center;">
+                <div style="font-size: 3rem; color: #e74c3c; margin: 2rem 0;">❌</div>
+                <h2 style="color: #e74c3c;">Payment Failed</h2>
+                <p id="failureReason">An error occurred. Please try again.</p>
+                <button class="btn btn-primary" style="margin-top: 2rem;" onclick="location.reload()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let selectedPaymentMethod = null;
+
+        function getTransactionId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('transaction_id');
+        }
+
+        async function loadTransactionDetails() {
+            const transactionId = getTransactionId();
+            if (!transactionId) {
+                showAlert('Invalid transaction ID', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/transactions/${transactionId}`, {
+                    credentials: 'include'
+                });
+                const transaction = await response.json();
+
+                document.getElementById('transactionId').textContent = transactionId;
+                document.getElementById('totalAmount').textContent = '₹' + transaction.total_price.toFixed(2);
+            } catch (error) {
+                showAlert('Error loading transaction: ' + error.message, 'error');
+            }
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.getElementById('razorpayForm').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('upiForm').style.display = method === 'upi' ? 'block' : 'none';
+        }
+
+        function processPayment() {
+            // Simulate payment processing
+            if (Math.random() > 0.3) {
+                completePayment(true);
+            } else {
+                completePayment(false);
+            }
+        }
+
+        function processUPI() {
+            const upiId = document.getElementById('upiId').value;
+            if (!upiId) {
+                showAlert('Please enter UPI ID', 'error');
+                return;
+            }
+            completePayment(true);
+        }
+
+        async function completePayment(success) {
+            const transactionId = getTransactionId();
+
+            try {
+                const response = await fetch(`${API_BASE}/transactions/${transactionId}/payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        status: success ? 'completed' : 'failed',
+                        method: selectedPaymentMethod,
+                        razorpay_order_id: 'demo_order_' + Date.now()
+                    })
+                });
+
+                if (response.ok) {
+                    if (success) {
+                        showPaymentSuccess(transactionId);
+                    } else {
+                        showPaymentFailure('Payment declined. Please try with a different card.');
+                    }
+                } else {
+                    showPaymentFailure('Server error. Please try again.');
+                }
+            } catch (error) {
+                showPaymentFailure('Error: ' + error.message);
+            }
+        }
+
+        function showPaymentSuccess(transactionId) {
+            document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('failureMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successTransactionId').textContent = transactionId;
+        }
+
+        function showPaymentFailure(reason) {
+            document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('failureMessage').style.display = 'block';
+            document.getElementById('failureReason').textContent = reason;
+        }
+
+        function redirectToDashboard() {
+            window.location.href = 'marketplace.html';
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.getElementById('alertContainer');
+            alertDiv.innerHTML = `<div class="alert alert-${type} show">${message}</div>`;
+        }
+
+        // Load transaction details on page load
+        loadTransactionDetails();
+    </script>
+</body>
+</html>

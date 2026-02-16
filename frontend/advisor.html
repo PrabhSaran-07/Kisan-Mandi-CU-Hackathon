@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agronomy Advisor - Kisan Mandi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="logo">🌾 Kisan Mandi</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="chatbot.html">AI Chatbot</a></li>
+                <li><a href="advisor.html">AI Advisor</a></li>
+                <li id="userGreeting" style="color: #2ecc71;"></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-header">🌱 AI Agronomy Advisor</div>
+                <p>Get personalized farming advice based on your crop, location, and seasonal data.</p>
+            </div>
+
+            <!-- Advisor Input Form -->
+            <div class="card">
+                <h3>Get Farming Advice</h3>
+                <form id="advisorForm">
+                    <div class="form-group">
+                        <label>Which crop do you grow?</label>
+                        <select id="cropType" required>
+                            <option value="">Select a crop</option>
+                            <option value="wheat">🌾 Wheat</option>
+                            <option value="rice">🍚 Rice</option>
+                            <option value="cotton">🧵 Cotton</option>
+                            <option value="sugarcane">🥤 Sugarcane</option>
+                            <option value="tomato">🍅 Tomato</option>
+                            <option value="onion">🧅 Onion</option>
+                            <option value="maize">🌽 Maize</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Location/State</label>
+                        <input type="text" id="farmerLocation" placeholder="e.g., Punjab, Karnataka" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Season</label>
+                        <select id="season" required>
+                            <option value="">Select season</option>
+                            <option value="rabi">🌙 Rabi (Oct-Mar)</option>
+                            <option value="kharif">☀️ Kharif (Jun-Oct)</option>
+                            <option value="zaid">🌇 Zaid (Mar-May)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Challenge/Question</label>
+                        <textarea id="farmingQuestion" rows="3" placeholder="e.g., What's the best fertilizer for wheat? How to prevent pest attack?" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Get AI Advice</button>
+                </form>
+            </div>
+
+            <!-- Advice Display -->
+            <div id="adviceContainer"></div>
+
+            <!-- Common Topics -->
+            <div class="card">
+                <h3>Quick Advice Topics</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="getTopic('soil_health')" style="text-align: left; white-space: normal; height: auto;">
+                        🌱 Soil Health & Fertilizers
+                    </button>
+                    <button class="btn btn-secondary" onclick="getTopic('pest_control')" style="text-align: left; white-space: normal; height: auto;">
+                        🐛 Pest Control
+                    </button>
+                    <button class="btn btn-secondary" onclick="getTopic('water_mgmt')" style="text-align: left; white-space: normal; height: auto;">
+                        💧 Water Management
+                    </button>
+                    <button class="btn btn-secondary" onclick="getTopic('yield_improvement')" style="text-align: left; white-space: normal; height: auto;">
+                        📈 Improve Crop Yield
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Kisan Mandi. AI-Powered Agricultural Intelligence</p>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let currentUser = null;
+
+        async function initAdvisor() {
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userStr);
+            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
+        }
+
+        document.getElementById('advisorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const crop = document.getElementById('cropType').value;
+            const location = document.getElementById('farmerLocation').value;
+            const season = document.getElementById('season').value;
+            const question = document.getElementById('farmingQuestion').value;
+
+            const message = `I'm growing ${crop} in ${location} during ${season} season. ${question}`;
+
+            await getAdvice(message, 'agronomy');
+        });
+
+        async function getTopic(topic) {
+            const messages = {
+                'soil_health': 'What is the best way to maintain and improve soil health for better crop yield?',
+                'pest_control': 'How can I naturally control pests without using harmful chemicals?',
+                'water_mgmt': 'What are the best water management practices for my region?',
+                'yield_improvement': 'What steps should I take to improve my crop yield?'
+            };
+
+            await getAdvice(messages[topic], 'agronomy');
+        }
+
+        async function getAdvice(message, type = 'agronomy') {
+            document.getElementById('adviceContainer').innerHTML = '<div class="card"><p style="text-align: center; color: #95a5a6;">AI is analyzing... ⏳</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        message: message,
+                        type: type
+                    })
+                });
+
+                const data = await response.json();
+
+                let html = `
+                    <div class="card">
+                        <h3>💡 AI Advice</h3>
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; border-left: 4px solid #2ecc71;">
+                            ${data.bot_response}
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #95a5a6;">
+                            📌 <strong>Disclaimer:</strong> This advice is for informational purposes. Consult local agricultural experts for location-specific guidance.
+                        </p>
+                    </div>
+                `;
+
+                document.getElementById('adviceContainer').innerHTML = html;
+
+            } catch (error) {
+                document.getElementById('adviceContainer').innerHTML = `<div class="card" style="background: #f8d7da;"><p style="color: #721c24;">Error: ${error.message}</p></div>`;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize on load
+        initAdvisor();
+    </script>
+</body>
+</html>

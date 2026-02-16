@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Kisan Mandi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="logo">🌾 Kisan Mandi</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="chatbot.html">AI Chatbot</a></li>
+                <li><a href="prices.html">Prices</a></li>
+                <li id="userGreeting" style="color: #2ecc71;"></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">🛒 Digital Marketplace</div>
+            <p>Browse and purchase fresh crops directly from farmers.</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Filters -->
+        <div class="card">
+            <h3>Filters</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="categoryFilter" onchange="filterCrops()">
+                        <option value="">All Categories</option>
+                        <option value="cereal">Cereal</option>
+                        <option value="vegetable">Vegetables</option>
+                        <option value="spice">Spices</option>
+                        <option value="fruit">Fruits</option>
+                        <option value="cash_crop">Cash Crops</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Location/State</label>
+                    <input type="text" id="locationFilter" placeholder="e.g., Punjab" onchange="filterCrops()">
+                </div>
+
+                <div class="form-group">
+                    <label>Search Crop</label>
+                    <input type="text" id="searchFilter" placeholder="e.g., Wheat" onchange="filterCrops()">
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="filterCrops()" style="margin-top: 2rem;">Search</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()" style="margin-left: 0.5rem; margin-top: 2rem;">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crops Grid -->
+        <div id="cropsContainer" class="grid"></div>
+    </div>
+
+    <!-- Buy Modal -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBuyModal()">&times;</span>
+            <h2>Purchase Crop</h2>
+            
+            <form id="buyForm">
+                <input type="hidden" id="selectedCropId">
+
+                <div class="form-group">
+                    <label>Crop Name</label>
+                    <input type="text" id="buyModalCropName" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>Price Per Unit (₹/KG)</label>
+                    <input type="text" id="buyModalPrice" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>Available Quantity (KG)</label>
+                    <input type="text" id="buyModalQuantity" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity to Buy (KG)</label>
+                    <input type="number" id="buyQuantity" step="0.1" min="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Price</label>
+                    <input type="text" id="buyTotalPrice" disabled style="color: #2ecc71; font-weight: bold; font-size: 1.2em;">
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="agreeCheckbox" required>
+                    <label style="display: inline; margin-left: 0.5rem;">I agree to the <a href="dashboard.html" onclick="viewAgreement(); return false;" style="color: #2ecc71;">Terms & Agreement</a></label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Kisan Mandi. Direct Farmer to Buyer - No Middlemen!</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let allCrops = [];
+        let currentUser = null;
+
+        // Initialize
+        async function initMarketplace() {
+            const userStr = localStorage.getItem('user');
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userStr);
+            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
+            
+            await loadCrops();
+        }
+
+        async function loadCrops() {
+            try {
+                const response = await fetch(`${API_BASE}/crops`, {
+                    credentials: 'include'
+                });
+                allCrops = await response.json();
+                displayCrops(allCrops);
+            } catch (error) {
+                showAlert('Error loading crops: ' + error.message, 'error');
+            }
+        }
+
+        function displayCrops(crops) {
+            let html = '';
+
+            if (crops.length === 0) {
+                html = '<div class="card"><p>No crops available. Please try different filters.</p></div>';
+            } else {
+                crops.forEach(crop => {
+                    html += `
+                        <div class="crop-card">
+                            <div class="crop-image">🌾</div>
+                            <div class="crop-info">
+                                <div class="crop-name">${crop.crop_name}</div>
+                                <div class="crop-price">₹${crop.price_per_unit}/kg</div>
+                                <div class="crop-location">📍 ${crop.location}</div>
+                                <p><strong>Available:</strong> ${crop.quantity} ${crop.unit}</p>
+                                <p><strong>Seller:</strong> ${crop.seller.username}</p>
+                                <p style="font-size: 0.9rem; color: #95a5a6;">${crop.category}</p>
+                                <button class="btn btn-primary" onclick="openBuyModal(${crop.id})">Buy Now</button>
+                                <button class="btn btn-secondary" onclick="contactSeller('${crop.seller.username}')">Contact Seller</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('cropsContainer').innerHTML = html;
+        }
+
+        function filterCrops() {
+            const category = document.getElementById('categoryFilter').value;
+            const location = document.getElementById('locationFilter').value.toLowerCase();
+            const search = document.getElementById('searchFilter').value.toLowerCase();
+
+            const filtered = allCrops.filter(crop => {
+                return (
+                    (!category || crop.category === category) &&
+                    (!location || crop.location.toLowerCase().includes(location)) &&
+                    (!search || crop.crop_name.toLowerCase().includes(search))
+                );
+            });
+
+            displayCrops(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('searchFilter').value = '';
+            displayCrops(allCrops);
+        }
+
+        function openBuyModal(cropId) {
+            const crop = allCrops.find(c => c.id === cropId);
+            if (crop) {
+                document.getElementById('selectedCropId').value = cropId;
+                document.getElementById('buyModalCropName').value = crop.crop_name;
+                document.getElementById('buyModalPrice').value = '₹' + crop.price_per_unit;
+                document.getElementById('buyModalQuantity').value = crop.quantity + ' kg';
+                document.getElementById('buyQuantity').max = crop.quantity;
+                document.getElementById('buyQuantity').value = 1;
+                updateTotalPrice(crop.price_per_unit);
+                document.getElementById('buyModal').classList.add('show');
+            }
+        }
+
+        function closeBuyModal() {
+            document.getElementById('buyModal').classList.remove('show');
+            document.getElementById('buyForm').reset();
+        }
+
+        function updateTotalPrice(pricePerUnit) {
+            const quantity = parseFloat(document.getElementById('buyQuantity').value) || 0;
+            const total = quantity * pricePerUnit;
+            document.getElementById('buyTotalPrice').value = '₹' + total.toFixed(2);
+        }
+
+        document.getElementById('buyQuantity').addEventListener('input', function() {
+            const crop = allCrops.find(c => c.id === parseInt(document.getElementById('selectedCropId').value));
+            updateTotalPrice(crop.price_per_unit);
+        });
+
+        document.getElementById('buyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const cropId = parseInt(document.getElementById('selectedCropId').value);
+            const quantity = parseFloat(document.getElementById('buyQuantity').value);
+
+            try {
+                const response = await fetch(`${API_BASE}/transactions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        crop_id: cropId,
+                        quantity: quantity,
+                        agreement_accepted: document.getElementById('agreeCheckbox').checked
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Order created! Proceeding to payment...', 'success');
+                    closeBuyModal();
+                    // Redirect to payment page
+                    setTimeout(() => {
+                        window.location.href = `payment.html?transaction_id=${data.transaction_id}`;
+                    }, 1500);
+                } else {
+                    showAlert(data.error || 'Failed to create order', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
+
+        function contactSeller(sellerUsername) {
+            showAlert(`You will contact ${sellerUsername}. Feature coming soon!`, 'info');
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.getElementById('alertContainer');
+            alertDiv.innerHTML = `<div class="alert alert-${type} show">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Initialize on load
+        initMarketplace();
+    </script>
+</body>
+</html>

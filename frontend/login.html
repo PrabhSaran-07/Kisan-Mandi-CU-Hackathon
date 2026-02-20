@@ -10,6 +10,9 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
+    <!-- Custom Auth CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
     <link rel="stylesheet" href="/static/css/auth.css">
 
 </head>
@@ -69,30 +72,5 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     } else {
         alert(result.error || "Login failed");
     }
-});
-</script>
-
-
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const data = {
-    username: this.username.value,
-    password: this.password.value
-  };
-
-  const res = await fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-
-  if (res.ok) {
-    alert("Login successful");
-    window.location.href = "/";
-  } else {
-    alert("Invalid credentials");
-  }
 });
 </script>

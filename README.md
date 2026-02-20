@@ -1,6 +1,5 @@
 # Kisan Mandi - Digital Agricultural Marketplace
 
-**3-4 Day Development Roadmap**
 
 ## Project Overview
 A digital platform connecting farmers, buyers, and logistics providers with:

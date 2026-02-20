@@ -1,366 +1,1035 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Kisan Mandi</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+
+    <style>
+        :root {
+            --green-deep: #1a3c1e;
+            --green-mid: #2d6a35;
+            --green-fresh: #4caf50;
+            --green-light: #a8d5a2;
+            --gold: #e8a820;
+            --gold-light: #f5d07a;
+            --cream: #f9f4e8;
+            --earth: #7a5c3a;
+            --earth-light: #c8a97a;
+            --white: #ffffff;
+            --text-dark: #1a1a1a;
+            --text-mid: #4a4a4a;
+            --rupee: #d4af37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f9f4e8;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(26, 60, 30, 0.97);
+            backdrop-filter: blur(12px);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            border-bottom: 2px solid #e8a820;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #e8a820;
+            letter-spacing: 1px;
+        }
+
+        .nav-logo span {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #a8d5a2;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #e8a820;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-outline {
+            padding: 8px 18px;
+            border: 1.5px solid #e8a820;
+            color: #e8a820;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: #e8a820;
+            color: #1a3c1e;
+        }
+
+        .btn-primary {
+            padding: 8px 18px;
+            border: none;
+            background: #e8a820;
+            color: #1a3c1e;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #a8d5a2;
+            transform: translateY(-1px);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #1a3c1e 0%, #243b28 50%, #1e4a24 100%);
+            display: flex;
+            align-items: center;
+            padding: 80px 2rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234caf50' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(232, 168, 32, 0.15);
+            border: 1px solid #e8a820;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 1.2rem;
+            font-size: 0.78rem;
+            color: #e8a820;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h1 em {
+            color: #e8a820;
+            font-style: normal;
+        }
+
+        .hero p {
+            color: #a8d5a2;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-cta {
+            padding: 14px 30px;
+            background: #e8a820;
+            color: #1a3c1e;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(232, 168, 32, 0.4);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(232, 168, 32, 0.5);
+        }
+
+        .hero-cta-sec {
+            padding: 14px 30px;
+            background: transparent;
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hero-cta-sec:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            color: #e8a820;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #a8d5a2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* HERO VISUAL */
+        .hero-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .price-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .price-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .price-card-title {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .ai-badge {
+            background: #e8a820;
+            color: #1a3c1e;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .crop-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .crop-row:last-child {
+            border-bottom: none;
+        }
+
+        .crop-name {
+            color: #a8d5a2;
+            font-size: 0.88rem;
+        }
+
+        .crop-price {
+            color: #e8a820;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .crop-change {
+            font-size: 0.75rem;
+        }
+
+        .up {
+            color: #6fcf97;
+        }
+
+        .down {
+            color: #eb5757;
+        }
+
+        .match-card {
+            background: rgba(76, 175, 80, 0.12);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .match-card h4 {
+            color: #6fcf97;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+
+        .buyer-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 12px;
+            margin: 3px;
+        }
+
+        .buyer-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6fcf97;
+        }
+
+        .buyer-name {
+            color: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        .buyer-dist {
+            color: #a8d5a2;
+            font-size: 0.72rem;
+        }
+
+        /* SECTION COMMONS */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4caf50;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 700;
+            color: #1a3c1e;
+            margin-bottom: 1rem;
+        }
+
+        .section-title em {
+            color: #e8a820;
+            font-style: normal;
+        }
+
+        .section-sub {
+            color: #4caf50;
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 560px;
+        }
+
+        /* HOW IT WORKS */
+        .how {
+            background: #ffffff;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .workflow-step {
+            background: #f9f4e8;
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .workflow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(45, 106, 53, 0.12);
+        }
+
+        .step-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(76, 175, 80, 0.12);
+            position: absolute;
+            top: 1rem;
+            right: 1.2rem;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #1a3c1e;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-desc {
+            font-size: 0.88rem;
+            color: #4caf50;
+            line-height: 1.6;
+        }
+
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e8a820;
+            font-size: 1.4rem;
+        }
+
+        /* MARKETPLACE */
+        .marketplace {
+            background: #f9f4e8;
+        }
+
+        .market-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 0 1rem;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 12px 0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem;
+            background: transparent;
+            color: #1a1a1a;
+        }
+
+        .filter-btn {
+            padding: 12px 18px;
+            border: 1.5px solid rgba(76, 175, 80, 0.3);
+            background: #FFFFFF;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            cursor: pointer;
+            color: #4caf50;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #4caf50;
+            color: #FFFFFF;
+            border-color: #4caf50;
+        }
+
+        .crops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .crop-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(76, 175, 80, 0.12);
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .crop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            border-color: #4caf50;
+        }
+
+        .crop-img {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        }
+
+        .crop-info {
+            padding: 1rem;
+        }
+
+        .crop-info h3 {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1a3c1e;
+            margin-bottom: 0.2rem;
+        }
+
+        .crop-meta {
+            font-size: 0.78rem;
+            color: #4caf50;
+            margin-bottom: 0.6rem;
+        }
+
+        .crop-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .crop-price-main {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4caf50;
+        }
+
+        .ai-suggest {
+            background: rgba(232, 168, 32, 0.1);
+            color: #e8a820;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .crop-farmer {
+            font-size: 0.75rem;
+            color: #4caf50;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* SELL FORM */
+        .sell {
+            background: linear-gradient(160deg, #1a3c1e, #1e4a24);
+        }
+
+        .sell .section-title,
+        .sell .section-label {
+            color: #FFFFFF;
+        }
+
+        .sell .section-sub {
+            color: #4caf50;
+        }
+
+        .sell-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+            align-items: start;
+        }
+
+        .sell-form {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .form-row {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.82rem;
+            color: #4caf50;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .form-row input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-row input:focus,
+        .form-row select:focus {
+            border-color: #e8a820;
+        }
+
+        .form-row select option {
+            background: #1a3c1e;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .ai-price-preview {
+            background: rgba(232, 168, 32, 0.12);
+            border: 1px solid rgba(232, 168, 32, 0.4);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .ai-price-preview h4 {
+            color: #e8a820;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+
+        .price-suggestion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.6rem;
+            color: #e8a820;
+            font-weight: 700;
+        }
+
+        .price-range {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #e8a820;
+            color: #1a3c1e;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #a8d5a2;
+            transform: translateY(-1px);
+        }
+
+        .sell-side-info {}
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .info-card h3 {
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nearby-buyers {}
+
+        .buyer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .buyer-row:last-child {
+            border-bottom: none;
+        }
+
+        .buyer-row-info h4 {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .buyer-row-info p {
+            color: #4caf50;
+            font-size: 0.75rem;
+        }
+
+        .buyer-tag {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        /* Price ticker */
+  .ticker-bar {
+    background: var(--green-deep); padding: 8px 0; overflow: hidden;
+    border-bottom: 1px solid rgba(232,168,32,0.3);
+    margin-top: 64px;
+  }
+  .ticker-track {
+    display: flex; gap: 3rem;
+    animation: scroll 20s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-item { display: flex; gap: 0.5rem; font-size: 0.8rem; }
+  .ticker-name { color: var(--green-light); }
+  .ticker-price { color: var(--gold); font-family: 'Space Mono', monospace; font-weight: 700; }
+  .ticker-chg { font-size: 0.72rem; }
+    </style>
+
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="navbar">
-            <a href="/" class="logo"> Kisan Mandi</a>
-            <ul class="nav-links">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="marketplace.html">Marketplace</a></li>
-                <li><a href="chatbot.html">AI Chatbot</a></li>
-                <li><a href="advisor.html">AI Advisor</a></li>
-                <li><a href="prices.html">Prices</a></li>
-                <li id="userGreeting" style="color: #2ecc71;"></li>
-                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
-            </ul>
-        </div>
-    </nav>
 
-    <div class="container">
-        <!-- Dashboard Header -->
-        <div class="card">
-            <div class="card-header">welcome to Kisan Mandi</div>
-            <p>A digital marketplace connecting farmers, buyers, and logistics providers.</p>
-        </div>
 
-        <div id="alertContainer"></div>
-
-        <!-- Role-based Content -->
-        <div id="farmerSection">
-            <div class="card">
-                <div class="card-header"> Farmer Dashboard</div>
-                <p>Manage your crop listings and transactions.</p>
-
-                <button class="btn btn-primary" onclick="openListCropModal()">+ List New Crop</button>
-                <button class="btn btn-secondary" onclick="viewMyListings()">View My Listings</button>
-            </div>
-
-            <div id="myListingsContainer"></div>
-        </div>
-
-        <div id="buyerSection" style="display: none;">
-            <div class="card">
-                <div class="card-header"> Buyer Dashboard</div>
-                <p>Browse and purchase crops from farmers.</p>
-
-                <button class="btn btn-primary" onclick="window.location.href='marketplace.html'">Browse Marketplace</button>
-                <button class="btn btn-secondary" onclick="viewMyOrders()">View My Orders</button>
-            </div>
-
-            <div id="myOrdersContainer"></div>
-        </div>
-
-        <div id="adminSection" style="display: none;">
-            <div class="card">
-                <div class="card-header"> Admin Dashboard</div>
-                <p>Manage the platform.</p>
-
-                <button class="btn btn-primary" onclick="viewAllUsers()">View All Users</button>
-                <button class="btn btn-secondary" onclick="viewAllTransactions()">View All Transactions</button>
-                <button class="btn btn-secondary" onclick="managePrices()">Manage Prices</button>
-            </div>
-
-            <div id="adminDataContainer"></div>
-        </div>
-
-        <!-- General Statistics -->
-        <div class="grid">
-            <div class="card">
-                <div class="card-header"> Platform Stats</div>
-                <p>Total Listings: <strong id="totalListings">0</strong></p>
-                <p>Total Users: <strong id="totalUsers">0</strong></p>
-                <p>Active Transactions: <strong id="activeTransactions">0</strong></p>
-            </div>
-
-            <div class="card">
-                <div class="card-header"> Quick Links</div>
-                <ul style="list-style: none;">
-                    <li><a href="marketplace.html" style="color: #2ecc71; text-decoration: none;">→ Browse Marketplace</a></li>
-                    <li><a href="chatbot.html" style="color: #2ecc71; text-decoration: none;">→ Chat with AI Advisor</a></li>
-                    <li><a href="prices.html" style="color: #2ecc71; text-decoration: none;">→ Check Crop Prices</a></li>
-                    <li><a href="#" onclick="viewAgreement(); return false;" style="color: #2ecc71; text-decoration: none;">→ View Terms & Agreement</a></li>
-                </ul>
-            </div>
+    <!-- PRICE TICKER -->
+    <div class="ticker-bar">
+        <div class="ticker-track" id="ticker">
+            <span class="ticker-item"><span class="ticker-name">Wheat</span><span
+                    class="ticker-price">₹2,340/q</span><span class="ticker-chg up">▲2.3%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
+                    class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Maize</span><span
+                    class="ticker-price">₹1,890/q</span><span class="ticker-chg down">▼0.8%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Tomato</span><span
+                    class="ticker-price">₹850/q</span><span class="ticker-chg up">▲5.2%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Potato</span><span
+                    class="ticker-price">₹620/q</span><span class="ticker-chg down">▼1.4%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Soybean</span><span
+                    class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Cotton</span><span
+                    class="ticker-price">₹6,200/q</span><span class="ticker-chg up">▲1.7%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Onion</span><span
+                    class="ticker-price">₹1,250/q</span><span class="ticker-chg down">▼2.1%</span></span>
+            <!-- Duplicate for seamless loop -->
+            <span class="ticker-item"><span class="ticker-name">Wheat</span><span
+                    class="ticker-price">₹2,340/q</span><span class="ticker-chg up">▲2.3%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
+                    class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Maize</span><span
+                    class="ticker-price">₹1,890/q</span><span class="ticker-chg down">▼0.8%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Tomato</span><span
+                    class="ticker-price">₹850/q</span><span class="ticker-chg up">▲5.2%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Potato</span><span
+                    class="ticker-price">₹620/q</span><span class="ticker-chg down">▼1.4%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Soybean</span><span
+                    class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Cotton</span><span
+                    class="ticker-price">₹6,200/q</span><span class="ticker-chg up">▲1.7%</span></span>
+            <span class="ticker-item"><span class="ticker-name">Onion</span><span
+                    class="ticker-price">₹1,250/q</span><span class="ticker-chg down">▼2.1%</span></span>
         </div>
     </div>
 
-    <!-- List Crop Modal -->
-    <div id="listCropModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeListCropModal()">&times;</span>
-            <h2>List New Crop</h2>
-            
-            <form id="listCropForm">
-                <div class="form-group">
-                    <label>Crop Name</label>
-                    <input type="text" id="cropName" required>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="fade-up">
+                <div class="hero-badge"><span class="live-dot"></span> AI-Powered • Live Prices</div>
+                <h1>India's Smartest <em>Agri</em>Marketplace</h1>
+                <p>Kisan Mandi connects farmers directly with buyers — eliminating middlemen, ensuring fair AI-predicted
+                    prices, and enabling instant UPI payments.</p>
+                <div class="hero-actions">
+                    <button class="hero-cta" onclick="scrollTo('marketplace')">🌾 Browse Crops</button>
+                    
                 </div>
+            </div>
+    </section>
 
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="cropCategory" required>
-                        <option value="">Select Category</option>
-                        <option value="cereal">Cereal (Rice, Wheat)</option>
-                        <option value="vegetable">Vegetables</option>
-                        <option value="spice">Spices</option>
-                        <option value="fruit">Fruits</option>
-                        <option value="cash_crop">Cash Crop</option>
-                    </select>
+    <!-- HOW IT WORKS -->
+    <section class="how" id="how">
+        <div class="container">
+            <div class="section-label">System Workflow</div>
+            <div class="section-title">How <em>Kisan Mandi</em> Works</div>
+            <p class="section-sub">From listing your crop to payment in your account — the entire process is
+                transparent, fast, and fair.</p>
+            <div class="workflow">
+                <div class="workflow-step fade-up">
+                    <span class="step-num">01</span>
+                    <div class="step-icon">🏪</div>
+                    <div class="step-title">List Your Produce</div>
+                    <div class="step-desc">Farmers upload crop details — type, quantity, quality grade, and location. No
+                        middleman required.</div>
                 </div>
-
-                <div class="form-group">
-                    <label>Quantity (in KG)</label>
-                    <input type="number" id="cropQuantity" step="0.1" required>
+                <div class="workflow-step fade-up delay-1">
+                    <span class="step-num">02</span>
+                    <div class="step-icon">🤖</div>
+                    <div class="step-title">AI Suggests Optimal Price</div>
+                    <div class="step-desc">Our ML model analyzes mandi rates, demand trends, and seasonality to give you
+                        the best fair price.</div>
                 </div>
-
-                <div class="form-group">
-                    <label>Price Per Unit (₹/KG)</label>
-                    <input type="number" id="cropPrice" step="0.1" required>
+                <div class="workflow-step fade-up delay-2">
+                    <span class="step-num">03</span>
+                    <div class="step-icon">📍</div>
+                    <div class="step-title">Location-Based Buyer Matching</div>
+                    <div class="step-desc">Smart geo-matching connects you with verified buyers closest to your
+                        location, reducing logistics cost.</div>
                 </div>
-
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="cropDescription" rows="3" placeholder="Describe your crop quality, farming method, etc."></textarea>
+                <div class="workflow-step fade-up">
+                    <span class="step-num">04</span>
+                    <div class="step-icon">📈</div>
+                    <div class="step-title">AI Price Prediction</div>
+                    <div class="step-desc">View price forecasts for the next 7–30 days so you can time your sale for
+                        maximum profit.</div>
                 </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">List Crop</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Agreement Modal -->
-    <div id="agreementModal" class="modal">
-        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
-            <span class="close-modal" onclick="closeAgreement()">&times;</span>
-            <h2>Terms & Agreement</h2>
-            
-            <h3>Platform Agreement - Kisan Mandi</h3>
-            <p><strong>Effective Date:</strong> February 2026</p>
-
-            <h4>1. Platform Overview</h4>
-            <p>Kisan Mandi is a digital agricultural marketplace connecting farmers, buyers, and logistics providers directly, eliminating middlemen.</p>
-
-            <h4>2. User Responsibilities</h4>
-            <ul>
-                <li>Farmers: Provide accurate crop information, quality standards</li>
-                <li>Buyers: Make legitimate purchases, honest reviews</li>
-                <li>All: Maintain authentic identity verification</li>
-            </ul>
-
-            <h4>3. Payment & Transactions</h4>
-            <p>Payments processed through Razorpay (UPI, Cards). Platform holds 2% transaction fee.</p>
-
-            <h4>4. Dispute Resolution</h4>
-            <p>30-day return policy for system errors. Disputes resolved by admin team within 7 days.</p>
-
-            <h4>5. Identity Verification</h4>
-            <p>Aadhar or Government ID required for all users. Verification is mandatory.</p>
-
-            <h4>6. Returning Policy</h4>
-            <p>If system errors occur in payment or delivery, buyers can return goods within 30 days with proof.</p>
-
-            <h4>7. Data Privacy</h4>
-            <p>User data is protected and not shared with third parties except logistics providers for delivery.</p>
-
-            <div style="margin-top: 2rem;">
-                <button class="btn btn-primary" onclick="acceptAgreement()">I Agree</button>
-                <button class="btn btn-secondary" onclick="closeAgreement()">Close</button>
+                <div class="workflow-step fade-up delay-1">
+                    <span class="step-num">05</span>
+                    <div class="step-icon">🤝</div>
+                    <div class="step-title">Deal Confirmation</div>
+                    <div class="step-desc">Buyer and seller confirm the deal digitally. All agreements are recorded and
+                        dispute-protected.</div>
+                </div>
+                <div class="workflow-step fade-up delay-2">
+                    <span class="step-num">06</span>
+                    <div class="step-icon">💸</div>
+                    <div class="step-title">Instant UPI Payment</div>
+                    <div class="step-desc">Payment hits your UPI-linked bank account within seconds of deal
+                        confirmation. No delays ever.</div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <footer>
-        <p>&copy; 2026 Kisan Mandi. All rights reserved. | Digital Agriculture Marketplace</p>
-    </footer>
 
-    <script src="js/app.js"></script>
-    <script>
-        const API_BASE = 'http://localhost:5000/api';
-        let currentUser = null;
-
-        // Initialize Dashboard
-        async function initDashboard() {
-            const userStr = localStorage.getItem('user');
-            if (!userStr) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            currentUser = JSON.parse(userStr);
-            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
-
-            // Show role-specific dashboard
-            document.getElementById('farmerSection').style.display = 
-                currentUser.role === 'farmer' ? 'block' : 'none';
-            document.getElementById('buyerSection').style.display = 
-                currentUser.role === 'buyer' ? 'block' : 'none';
-            document.getElementById('adminSection').style.display = 
-                currentUser.role === 'admin' ? 'block' : 'none';
-
-            if (currentUser.role === 'farmer') {
-                viewMyListings();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-        }
-
-        function openListCropModal() {
-            document.getElementById('listCropModal').classList.add('show');
-        }
-
-        function closeListCropModal() {
-            document.getElementById('listCropModal').classList.remove('show');
-            document.getElementById('listCropForm').reset();
-        }
-
-        function viewAgreement() {
-            document.getElementById('agreementModal').classList.add('show');
-        }
-
-        function closeAgreement() {
-            document.getElementById('agreementModal').classList.remove('show');
-        }
-
-        function acceptAgreement() {
-            showAlert('Agreement accepted!', 'success');
-            closeAgreement();
-        }
-
-        function showAlert(message, type = 'info') {
-            const alertDiv = document.getElementById('alertContainer');
-            alertDiv.innerHTML = `<div class="alert alert-${type} show">${message}</div>`;
-            setTimeout(() => {
-                alertDiv.innerHTML = '';
-            }, 5000);
-        }
-
-        // List Crop Form
-        document.getElementById('listCropForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const cropData = {
-                crop_name: document.getElementById('cropName').value,
-                category: document.getElementById('cropCategory').value,
-                quantity: parseFloat(document.getElementById('cropQuantity').value),
-                price_per_unit: parseFloat(document.getElementById('cropPrice').value),
-                description: document.getElementById('cropDescription').value,
-                unit: 'kg'
-            };
-
-            try {
-                const response = await fetch(`${API_BASE}/crops`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(cropData)
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showAlert('Crop listed successfully!', 'success');
-                    closeListCropModal();
-                    viewMyListings();
-                } else {
-                    showAlert(data.error || 'Failed to list crop', 'error');
-                }
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'error');
-            }
-        });
-
-        // View My Listings
-        async function viewMyListings() {
-            try {
-                const response = await fetch(`${API_BASE}/crops`, {
-                    credentials: 'include'
-                });
-                const crops = await response.json();
-
-                // Filter crops by current farmer
-                const myCrops = crops.filter(crop => crop.seller.id === currentUser.id);
-
-                let html = '<div class="card"><div class="card-header">My Crops Listed</div>';
-                if (myCrops.length === 0) {
-                    html += '<p>No crops listed yet.</p>';
-                } else {
-                    html += '<div class="grid">';
-                    myCrops.forEach(crop => {
-                        html += `
-                            <div class="crop-card">
-                                <div class="crop-image">🌾</div>
-                                <div class="crop-info">
-                                    <div class="crop-name">${crop.crop_name}</div>
-                                    <div class="crop-price">₹${crop.price_per_unit}/kg</div>
-                                    <div class="crop-location">${crop.location}</div>
-                                    <p><strong>Quantity:</strong> ${crop.quantity} ${crop.unit}</p>
-                                    <p><strong>Status:</strong> ${crop.status}</p>
-                                    <button class="btn btn-danger" onclick="deleteCrop(${crop.id})">Delete</button>
-                                </div>
+    <!-- SELL -->
+    <section class="sell" id="sell">
+        <div class="container">
+            <div class="section-label">For Farmers</div>
+            <div class="section-title">List & <em>Sell</em> Your Crop</div>
+            <p class="section-sub">Get AI-backed fair pricing and connect with verified buyers instantly.</p>
+            <div class="sell-grid">
+                <div class="sell-form">
+                    <div class="form-row">
+                        <label>Crop Name</label>
+                        <select id="cropSelect" onchange="updateAIPrice()">
+                            <option value="">Select Crop</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="rice">Basmati Rice</option>
+                            <option value="maize">Maize</option>
+                            <option value="tomato">Tomato</option>
+                            <option value="potato">Potato</option>
+                            <option value="soybean">Soybean</option>
+                            <option value="cotton">Cotton</option>
+                            <option value="onion">Onion</option>
+                        </select>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-row">
+                            <label>Quantity (Quintals)</label>
+                            <input type="number" id="qtyInput" placeholder="e.g. 50" min="1" oninput="updateAIPrice()">
+                        </div>
+                        <div class="form-row">
+                            <label>Quality Grade</label>
+                            <select id="gradeSelect" onchange="updateAIPrice()">
+                                <option value="A">A – Premium</option>
+                                <option value="B">B – Standard</option>
+                                <option value="C">C – Economy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Location (Village / District)</label>
+                        <input type="text" id="locationInput" placeholder="e.g. Ludhiana, Punjab">
+                    </div>
+                    <div class="form-row">
+                        <label>Harvest Date</label>
+                        <input type="date" id="harvestDate">
+                    </div>
+                    <div class="ai-price-preview" id="aiPreview" style="display:none">
+                        <h4>🤖 AI Price Recommendation</h4>
+                        <div class="price-suggestion">
+                            <div>
+                                <div class="price-val" id="aiPriceVal">—</div>
+                                <div class="price-range" id="aiPriceRange">per quintal</div>
                             </div>
-                        `;
-                    });
-                    html += '</div>';
-                }
-                html += '</div>';
+                            <div style="text-align:right">
+                                <div style="color:#6fcf97;font-size:0.82rem">✓ Fair Market Rate</div>
+                                <div style="color:rgba(255,255,255,0.5);font-size:0.72rem" id="totalVal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="submit-btn" onclick="submitListing()">🌾 List My Crop for Sale</button>
+                </div>
+                <div class="sell-side-info">
+                    <div class="info-card nearby-buyers">
+                        <h3>📍 Nearby Verified Buyers</h3>
+                        <div class="buyer-row">
+                            <div class="buyer-row-info">
+                                <h4>Punjab Agro Industries</h4>
+                                <p>Wheat, Rice · 2.3 km away</p>
+                            </div><span class="buyer-tag">Active</span>
+                        </div>
+                        <div class="buyer-row">
+                            <div class="buyer-row-info">
+                                <h4>Singh & Sons Traders</h4>
+                                <p>All grains · 4.1 km away</p>
+                            </div><span class="buyer-tag">Active</span>
+                        </div>
+                        <div class="buyer-row">
+                            <div class="buyer-row-info">
+                                <h4>FreshMart Wholesale</h4>
+                                <p>Vegetables · 5.7 km away</p>
+                            </div><span class="buyer-tag">Active</span>
+                        </div>
+                        <div class="buyer-row">
+                            <div class="buyer-row-info">
+                                <h4>National Foods Ltd.</h4>
+                                <p>Cotton, Soybean · 9.2 km</p>
+                            </div><span class="buyer-tag">Active</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3>📊 Price Forecast — Next 7 Days</h3>
+                        <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;line-height:1.7">
+                            AI model predicts <span style="color:#6fcf97;font-weight:700">+3.2%</span> increase for
+                            Wheat next week due to export demand. <span style="color:var(--gold-light)">Best time to
+                                sell: Wed–Fri.</span>
+                        </div>
+                    </div>
 
-                document.getElementById('myListingsContainer').innerHTML = html;
-            } catch (error) {
-                showAlert('Error loading listings: ' + error.message, 'error');
-            }
-        }
+                </div>
+            </div>
+        </div>
+    </section>
 
-        async function deleteCrop(cropId) {
-            if (confirm('Are you sure you want to delete this crop listing?')) {
-                try {
-                    const response = await fetch(`${API_BASE}/crops/${cropId}`, {
-                        method: 'DELETE',
-                        credentials: 'include'
-                    });
 
-                    if (response.ok) {
-                        showAlert('Crop deleted!', 'success');
-                        viewMyListings();
-                    } else {
-                        showAlert('Failed to delete crop', 'error');
-                    }
-                } catch (error) {
-                    showAlert('Error: ' + error.message, 'error');
-                }
-            }
-        }
 
-        // View My Orders (Buyer)
-        async function viewMyOrders() {
-            // TODO: Implement view orders for buyer
-            showAlert('Orders view coming soon!', 'info');
-        }
 
-        // Admin functions
-        async function viewAllUsers() {
-            showAlert('User management coming soon!', 'info');
-        }
-
-        async function viewAllTransactions() {
-            showAlert('Transaction management coming soon!', 'info');
-        }
-
-        async function managePrices() {
-            showAlert('Price management coming soon!', 'info');
-        }
-
-        // Initialize on load
-        initDashboard();
-    </script>
 </body>
+
 </html>

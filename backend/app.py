@@ -374,10 +374,6 @@ def index():
     """Serve login page"""
     return send_from_directory(FRONTEND_DIR, 'login.html')
 
-@app.route('/login.html')
-def login_page():
-    """Serve login page"""
-    return send_from_directory(FRONTEND_DIR, 'login.html')
 
 @app.route('/dashboard.html')
 @login_required

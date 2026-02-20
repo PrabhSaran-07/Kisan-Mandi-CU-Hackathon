@@ -1,0 +1,33 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #2E7D32, #A5D6A7);
+  min-height: 100vh;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.auth-title {
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.btn-main {
+  background-color: #2E7D32;
+  color: white;
+  border-radius: 25px;
+}
+
+.btn-main:hover {
+  background-color: #1B5E20;
+  transform: translateY(-2px);
+  transition: 0.3s;
+}
+
+.form-control, .form-select {
+  border-radius: 20px;
+}

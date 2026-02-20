@@ -3,408 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kisan Mandi | Login</title>
+    <title>Kisan Mandi - Login/Signup</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-        }
-
-        nav {
-            display: none;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(44, 62, 80, 0.9);
-        }
-
-        .auth-wrapper {
-            width: 100%;
-            max-width: 400px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 150px;
-        }
-
-        .auth-card {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
-
-        .brand {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .brand h1 {
-            font-size: 2rem;
-            color: var(--dark-color);
-            margin: 0.5rem 0;
-            font-weight: 700;
-        }
-
-        .brand p {
-            color: #95a5a6;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--dark-color);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.9rem;
-            border: 2px solid #ecf0f1;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #bdc3c7;
-        }
-
-        .role-selector {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .role-option {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid #bdc3c7;
-            border-radius: 6px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: white;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .role-option:hover {
-            border-color: var(--primary-color);
-            background: rgba(46, 204, 113, 0.05);
-        }
-
-        .role-option.active {
-            border-color: var(--primary-color);
-            background: rgba(46, 204, 113, 0.15);
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-submit:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .switch {
-            text-align: center;
-            color: #7f8c8d;
-            margin: 0;
-        }
-
-        .switch a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .switch a:hover {
-            color: var(--secondary-color);
-            text-decoration: underline;
-        }
-
-        .alert {
-            padding: 0.9rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            display: none;
-            font-size: 0.95rem;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @media (max-width: 600px) {
-            .auth-wrapper {
-                max-width: 100%;
-            }
-
-            .auth-card {
-                padding: 2rem 1.5rem;
-            }
-
-            .brand h1 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 </head>
-
 <body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1 class="text-center" style="color: #2ecc71; margin-bottom: 1.5rem;">🌾 Kisan Mandi</h1>
+                
+                <div id="alertContainer"></div>
 
-  <div class="auth-wrapper">
-    <div class="auth-card">
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2 class="text-center" style="margin-bottom: 2rem;">Login</h2>
+                    
+                    <form id="loginFormEl">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    </form>
 
-      <div class="brand">
-        <h1>🌾 Kisan Mandi</h1>
-        <p id="tabTitle">Login to your account</p>
-      </div>
+                    <p class="text-center" style="margin-top: 1rem;">
+                        Don't have an account? <a href="#" onclick="toggleForms(); return false;" style="color: #2ecc71; cursor: pointer;">Sign up</a>
+                    </p>
+                </div>
 
-      <div id="alertBox" class="alert"></div>
+                <!-- Signup Form -->
+                <div id="signupForm" style="display: none;">
+                    <h2 class="text-center" style="margin-bottom: 2rem;">Create Account</h2>
+                    
+                    <form id="signupFormEl">
+                        <!-- Role Selection -->
+                        <div class="form-group">
+                            <label>Select Your Role</label>
+                            <div class="role-selector">
+                                <div class="role-option active" data-role="farmer" onclick="selectRole(this)">
+                                     Farmer
+                                </div>
+                                <div class="role-option" data-role="buyer" onclick="selectRole(this)">
+                                     Buyer
+                                </div>
+                                <div class="role-option" data-role="admin" onclick="selectRole(this)">
+                                     Admin
+                                </div>
+                            </div>
+                            <input type="hidden" id="selectedRole" value="farmer">
+                        </div>
 
-      <!-- Login Tab -->
-      <div id="loginTab" class="tab-content active">
-        <form id="loginForm">
-          <div class="form-group">
-            <input type="text" name="username" placeholder="Username" required />
-          </div>
-          <div class="form-group">
-            <input type="password" name="password" placeholder="Password" required />
-          </div>
+                        <div class="form-group">
+                            <label for="signupUsername">Username</label>
+                            <input type="text" id="signupUsername" required>
+                        </div>
 
-          <button type="submit" class="btn-submit">Login</button>
-        </form>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" required>
+                        </div>
 
-        <p class="switch">
-          Don't have an account?
-          <a onclick="switchTab('register')">Register</a>
-        </p>
-      </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" required>
+                        </div>
 
-      <!-- Register Tab -->
-      <div id="registerTab" class="tab-content">
-        <form id="registerForm">
-          <div class="form-group">
-            <label>I am a:</label>
-            <div class="role-selector">
-              <div class="role-option active" data-role="farmer" onclick="selectRole(this)">🚜 Farmer</div>
-              <div class="role-option" data-role="buyer" onclick="selectRole(this)">🛒 Buyer</div>
+                        <div class="form-group">
+                            <label for="signupConfirmPassword">Confirm Password</label>
+                            <input type="password" id="signupConfirmPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupPhone">Phone Number</label>
+                            <input type="text" id="signupPhone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupLocation">Location/State</label>
+                            <input type="text" id="signupLocation" placeholder="e.g., Punjab, Karnataka" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+                    </form>
+
+                    <p class="text-center" style="margin-top: 1rem;">
+                        Already have an account? <a href="#" onclick="toggleForms(); return false;" style="color: #2ecc71; cursor: pointer;">Login</a>
+                    </p>
+                </div>
             </div>
-          </div>
-
-          <div class="form-group">
-            <input type="text" name="username" placeholder="Username" required />
-          </div>
-          <div class="form-group">
-            <input type="email" name="email" placeholder="Email" required />
-          </div>
-          <div class="form-group">
-            <input type="password" name="password" placeholder="Password (min 6 chars)" required />
-          </div>
-          <div class="form-group">
-            <input type="tel" name="phone" placeholder="Phone Number" />
-          </div>
-          <div class="form-group">
-            <input type="text" name="location" placeholder="Location" />
-          </div>
-
-          <input type="hidden" name="role" id="selectedRole" value="farmer" />
-
-          <button type="submit" class="btn-submit">Register</button>
-        </form>
-
-        <p class="switch">
-          Already have an account?
-          <a onclick="switchTab('login')">Login</a>
-        </p>
-      </div>
-
+        </div>
     </div>
-  </div>
 
-  <footer>
-    <p>&copy; 2026 Kisan Mandi - Empowering Farmers</p>
-  </footer>
+    <script src="js/app.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
 
-  <script>
-let selectedRole = 'farmer';
+        function toggleForms() {
+            document.getElementById('loginForm').style.display = 
+                document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = 
+                document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
+        }
 
-function switchTab(tab) {
-  const loginTab = document.getElementById('loginTab');
-  const registerTab = document.getElementById('registerTab');
-  const tabTitle = document.getElementById('tabTitle');
+        function selectRole(element) {
+            document.querySelectorAll('.role-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('selectedRole').value = element.dataset.role;
+        }
 
-  if (tab === 'register') {
-    loginTab.classList.remove('active');
-    registerTab.classList.add('active');
-    tabTitle.textContent = 'Create your account';
-  } else {
-    registerTab.classList.remove('active');
-    loginTab.classList.add('active');
-    tabTitle.textContent = 'Login to your account';
-  }
-}
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.getElementById('alertContainer');
+            alertDiv.innerHTML = `<div class="alert alert-${type} show">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
 
-function selectRole(element) {
-  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('active'));
-  element.classList.add('active');
-  selectedRole = element.getAttribute('data-role');
-  document.getElementById('selectedRole').value = selectedRole;
-}
+        // Login Form
+        document.getElementById('loginFormEl').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-function showAlert(message, type) {
-  const alertBox = document.getElementById('alertBox');
-  alertBox.textContent = message;
-  alertBox.className = `alert alert-${type} show`;
-  setTimeout(() => {
-    alertBox.classList.remove('show');
-  }, 4000);
-}
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
 
-// Login Form Handler
-document.getElementById('loginForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
 
-  const username = document.querySelector('#loginTab input[name="username"]').value;
-  const password = document.querySelector('#loginTab input[name="password"]').value;
+                const data = await response.json();
 
-  try {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
+                if (response.ok) {
+                    showAlert('Login successful! Redirecting...', 'success');
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    showAlert(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
 
-    const result = await response.json();
+        // Signup Form
+        document.getElementById('signupFormEl').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    if (response.ok) {
-      localStorage.setItem('user', JSON.stringify(result.user));
-      showAlert('✓ Login successful! Redirecting...', 'success');
-      setTimeout(() => {
-        window.location.href = '/dashboard.html';
-      }, 1500);
-    } else {
-      showAlert(result.error || '✗ Login failed. Check credentials.', 'error');
-    }
-  } catch (err) {
-    showAlert('✗ Network error. Please try again.', 'error');
-  }
-});
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
-// Register Form Handler
-document.getElementById('registerForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match!', 'error');
+                return;
+            }
 
-  const username = document.querySelector('#registerTab input[name="username"]').value;
-  const email = document.querySelector('#registerTab input[name="email"]').value;
-  const password = document.querySelector('#registerTab input[name="password"]').value;
-  const phone = document.querySelector('#registerTab input[name="phone"]').value;
-  const location = document.querySelector('#registerTab input[name="location"]').value;
+            const signupData = {
+                username: document.getElementById('signupUsername').value,
+                email: document.getElementById('signupEmail').value,
+                password: password,
+                role: document.getElementById('selectedRole').value,
+                phone: document.getElementById('signupPhone').value,
+                location: document.getElementById('signupLocation').value
+            };
 
-  if (password.length < 6) {
-    showAlert('✗ Password must be at least 6 characters.', 'error');
-    return;
-  }
+            try {
+                const response = await fetch(`${API_BASE}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(signupData)
+                });
 
-  try {
-    const response = await fetch('/api/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        phone,
-        location,
-        role: selectedRole
-      })
-    });
+                const data = await response.json();
 
-    const result = await response.json();
-
-    if (response.ok) {
-      showAlert('✓ Account created! Please login.', 'success');
-      setTimeout(() => {
-        switchTab('login');
-        document.getElementById('loginForm').reset();
-      }, 1500);
-    } else {
-      showAlert(result.error || '✗ Registration failed.', 'error');
-    }
-  } catch (err) {
-    showAlert('✗ Network error. Please try again.', 'error');
-  }
-});
-
-// Check if register mode is requested
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('mode') === 'register') {
-  switchTab('register');
-}
-  </script>
-
+                if (response.ok) {
+                    showAlert('Account created! Please login.', 'success');
+                    setTimeout(() => {
+                        toggleForms();
+                        document.getElementById('signupFormEl').reset();
+                    }, 1000);
+                } else {
+                    showAlert(data.error || 'Signup failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,222 +1,608 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot - Kisan Mandi</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kisan Mandi – AI Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #060e09;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    padding: 1rem;
+    overflow: hidden;
+  }
+
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    opacity: 0.12;
+    pointer-events: none;
+    animation: floatUp linear infinite;
+    z-index: 0;
+    user-select: none;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) rotate(0deg); opacity: 0.15; }
+    100% { transform: translateY(-10vh)  rotate(360deg); opacity: 0; }
+  }
+
+  /* Chat Container */
+  .chat-wrap {
+    position: relative;
+    z-index: 1;
+    width: min(700px, 100%);
+    height: min(820px, 95vh);
+    background: #0a1410;
+    border: 1px solid #1a3a2a;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 80px rgba(42,92,63,0.25), 0 25px 60px rgba(0,0,0,0.6);
+    overflow: hidden;
+  }
+
+  /* Header */
+  .chat-header {
+    background: linear-gradient(135deg, #0d2a18, #1a4a2e);
+    border-bottom: 1px solid #1a3a2a;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .header-left { display: flex; align-items: center; gap: 0.875rem; }
+  .bot-logo {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, #1a5c2e, #4caf50);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(76,175,80,0.3);
+  }
+  .bot-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800; font-size: 1.1rem;
+    color: #f59e0b; line-height: 1.1;
+  }
+  .bot-sub { color: #86efac; font-size: 0.8rem; font-weight: 500; }
+  .header-right { display: flex; align-items: center; gap: 1rem; }
+  .online-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4caf50;
+    display: inline-block; margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+  .online-label { color: #4caf50; font-size: 0.75rem; font-weight: 600; }
+  .clear-btn {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 8px; color: #6b8e7a;
+    padding: 0.35rem 0.75rem; cursor: pointer;
+    font-size: 0.75rem; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .clear-btn:hover { color: #fca5a5; border-color: rgba(239,68,68,0.5); }
+
+  /* API Banner */
+  #apiBanner {
+    background: rgba(245,158,11,0.1);
+    border-bottom: 1px solid rgba(245,158,11,0.3);
+    padding: 0.625rem 1.25rem;
+    color: #fbbf24; font-size: 0.8rem;
+    display: none; align-items: center; gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  #apiBanner.show { display: flex; }
+  #apiBanner a { color: #f59e0b; font-weight: 700; }
+
+  /* Messages */
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    scroll-behavior: smooth;
+  }
+  #messages::-webkit-scrollbar { width: 4px; }
+  #messages::-webkit-scrollbar-thumb { background: #2a5c3f; border-radius: 4px; }
+
+  .msg-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .msg-row.user { justify-content: flex-end; }
+
+  .avatar-sm {
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; flex-shrink: 0;
+  }
+  .av-bot  { background: linear-gradient(135deg,#1a5c2e,#4caf50); }
+  .av-user { background: linear-gradient(135deg,#2a5c3f,#3b7a4f); }
+
+  .bubble {
+    max-width: 75%;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: #e8f5e9;
+    word-break: break-word;
+  }
+  .bubble.bot {
+    padding: 1rem 1.125rem;
+    background: #111f17;
+    border: 1px solid #1e3828;
+    border-radius: 18px 18px 18px 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .bubble.user {
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg,#1a5c2e,#4caf50);
+    border-radius: 18px 18px 4px 18px;
+    box-shadow: 0 4px 15px rgba(76,175,80,0.2);
+  }
+  .bubble strong { color: #f59e0b; }
+  .bubble ul { padding-left: 1.2rem; margin: 0.3rem 0; }
+  .bubble li { margin-bottom: 0.2rem; }
+
+  /* Typing */
+  .typing-box {
+    background: #111f17;
+    border: 1px solid #1e3828;
+    border-radius: 18px 18px 18px 4px;
+    padding: 1rem 1.25rem;
+    display: flex; gap: 5px; align-items: center;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4caf50;
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Error */
+  .err-msg {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    color: #fca5a5;
+    font-size: 0.85rem;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Quick prompts */
+  .quick-bar {
+    padding: 0.75rem 1.25rem 0;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    border-top: 1px solid #0f1f14;
+    flex-shrink: 0;
+  }
+  .qbtn {
+    background: rgba(42,92,63,0.15);
+    border: 1px solid #1e3828;
+    border-radius: 20px; color: #6b8e7a;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.75rem; cursor: pointer;
+    transition: all 0.2s; font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .qbtn:hover {
+    background: rgba(76,175,80,0.2);
+    border-color: #4caf50; color: #86efac;
+    transform: translateY(-1px);
+  }
+  .qbtn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* Input row */
+  .input-row {
+    padding: 1rem 1.25rem 1.125rem;
+    display: flex; gap: 0.75rem; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  #userInput {
+    flex: 1;
+    background: #111f17;
+    border: 1.5px solid #1e3828;
+    border-radius: 14px;
+    padding: 0.875rem 1rem;
+    color: #e8f5e9;
+    font-size: 0.9rem;
+    resize: none;
+    line-height: 1.5;
+    max-height: 120px;
+    overflow-y: auto;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s;
+  }
+  #userInput:focus { border-color: #4caf50; outline: none; }
+  #userInput::placeholder { color: #3a5a4a; }
+  #userInput::-webkit-scrollbar { width: 3px; }
+  #userInput::-webkit-scrollbar-thumb { background: #2a5c3f; }
+
+  #sendBtn {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg,#1a5c2e,#4caf50);
+    border: none; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; color: #fff;
+    transition: all 0.2s;
+  }
+  #sendBtn:hover:not(:disabled) {
+    transform: scale(1.06);
+    box-shadow: 0 4px 18px rgba(76,175,80,0.45);
+  }
+  #sendBtn:disabled {
+    background: rgba(42,92,63,0.3);
+    cursor: not-allowed; transform: none;
+  }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  /* Footer */
+  .chat-footer {
+    text-align: center;
+    padding: 0 1rem 0.875rem;
+    color: #2a5c3f; font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes bounce {
+    0%,80%,100% { transform:translateY(0); }
+    40%          { transform:translateY(-6px); }
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes pulse {
+    0%,100% { opacity:1; }
+    50%      { opacity:0.35; }
+  }
+</style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
-    <div class="navbar">
-        <a href="/" class="logo">Kisan Mandi</a>
-        <ul class="nav-links">
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="marketplace.html">Marketplace</a></li>
-            <li><a href="chatbot.html">AI Chatbot</a></li>
-            <li><a href="prices.html">Prices</a></li>
-            <li id="userGreeting" style="color:#2ecc71;"></li>
-            <li><button class="btn-logout" onclick="logout()">Logout</button></li>
-        </ul>
+
+<!-- Chat UI -->
+<div class="chat-wrap">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="bot-logo">🌾</div>
+      <div>
+        <div class="bot-name">Kisan Mandi</div>
+        <div class="bot-sub">AI Advisor &nbsp;·&nbsp; Powered by Groq</div>
+      </div>
     </div>
-</nav>
-
-<div class="container">
-    <div style="max-width:700px;margin:auto;">
-
-        <div class="card">
-            <div class="card-header">AI Agricultural Advisor</div>
-            <p>Ask about crop prices, best harvest season, or farming tips.</p>
-        </div>
-
-        <!-- Chat Box -->
-            <div class="chat-wrapper" style="display:flex;flex-direction:column;height:600px;">
-
-            <div id="chatMessages" class="chat-messages">
-            </div>
-
-            <div class="chat-controls">
-                <input id="userInput" class="input-field" type="text" placeholder="Ask something..."
-                       onkeypress="if(event.key==='Enter')sendMessage()">
-                <button class="btn btn-primary btn-floating" onclick="sendMessage()">Send</button>
-            </div>
-
-            <div id="loadingIndicator" style="display:none;text-align:center;color:#888;margin-top:1rem;">
-                AI is thinking...
-            </div>
-        </div>
-
-        <!-- Quick Questions -->
-        <div class="card">
-            <h3>Quick Questions</h3>
-            <button class="btn btn-secondary" onclick="askQuick('current wheat price')">Current wheat price</button>
-            <button class="btn btn-secondary" onclick="askQuick('best season to harvest wheat')">Best season to harvest wheat</button>
-            <button class="btn btn-secondary" onclick="askQuick('how to sell crops')">How to sell crops</button>
-        </div>
-
+    <div class="header-right">
+      <span>
+        <span class="online-dot"></span>
+        <span class="online-label">Online</span>
+      </span>
+      <button class="clear-btn" onclick="clearChat()">🗑️ Clear</button>
     </div>
+  </div>
+
+  <!-- API banner -->
+  <div id="apiBanner">
+    ⚠️&nbsp; Add your API key in the script below.
+    Get it at &rarr;
+    <a href="https://console.groq.com/keys" target="_blank">Groq Console</a>
+  </div>
+
+  <!-- Messages -->
+  <div id="messages"></div>
+
+  <!-- Quick prompts -->
+  <div class="quick-bar" id="quickBar">
+    <button class="qbtn" onclick="quickSend(this)">Best crop to sell now?</button>
+    <button class="qbtn" onclick="quickSend(this)">Wheat price forecast</button>
+    <button class="qbtn" onclick="quickSend(this)">PM-KISAN scheme details</button>
+    <button class="qbtn" onclick="quickSend(this)">How to get MSP?</button>
+    <button class="qbtn" onclick="quickSend(this)">Weather impact on mustard</button>
+    <button class="qbtn" onclick="quickSend(this)">How to register on eNAM?</button>
+  </div>
+
+  <!-- Input row -->
+  <div class="input-row">
+    <textarea id="userInput" rows="1"
+      placeholder="Ask about crops, prices, govt schemes... (Enter to send)"
+      oninput="autoResize(this)"
+      onkeydown="handleKey(event)">
+    </textarea>
+    <button id="sendBtn" onclick="sendMessage()" title="Send">
+      <span id="sendIcon">➤</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="chat-footer">
+    CT University &nbsp;·&nbsp; Team Compile or Die &nbsp;·&nbsp; Shift+Enter for new line
+  </div>
+
 </div>
 
-<footer>
-    <p>&copy; 2026 Kisan Mandi</p>
-</footer>
-
 <script>
-const API_BASE = "http://localhost:5000/api";
-let currentUser = null;
+// ================================================================
+//  🔑  Groq API key (from https://console.groq.com/keys)
+//  For production, use a backend server so the key is not exposed.
+// ================================================================
+const API_KEY = "";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
-// INIT
-function initChatbot() {
-    const userStr = localStorage.getItem("user");
-    if (!userStr) {
-        window.location.href = "login.html";
-        return;
-    }
-    currentUser = JSON.parse(userStr);
-    document.getElementById("userGreeting").textContent = currentUser.username;
+// ── System prompt ─────────────────────────────────────────────────
+const SYSTEM = `You are an expert AI agricultural advisor for Kisan Mandi — an AI-powered agritech marketplace in India, built by Team Compile or Die, CT University.
 
-    addMessage("bot",
-        " Hello! I can help with:\n" +
-        "• Current crop prices\n" +
-        "• Best harvest season\n" +
-        "• Selling crops\n\n" +
-        "Try: 'current wheat price'"
-    );
+You help Indian farmers with:
+- Crop price predictions and market analysis
+- Best time to sell crops (seasonal trends)
+- Government schemes: PM-KISAN, MSP, eNAM, PMFBY, Kisan Credit Card (KCC)
+- Farming best practices and soil health
+- Weather impact on crop prices
+- Loan and crop insurance guidance
+
+Current approximate market prices (per quintal):
+• Wheat     — ₹1,650  (High demand, trending UP ↑)
+• Rice/Paddy— ₹2,200  (Medium demand, stable →)
+• Mustard   — ₹5,100  (High demand, trending UP ↑)
+• Maize     — ₹1,850  (Low demand, trending DOWN ↓)
+• Cotton    — ₹6,500  (High demand, trending UP ↑)
+• Sugarcane — ₹340    (Medium demand, stable →)
+
+Respond warmly and practically. Occasionally use "Kisan bhai", "Sat Sri Akal", or similar friendly terms. Be concise, use emojis sparingly, and always give actionable advice.`;
+
+// ── State ──────────────────────────────────────────────────────────
+let history   = [];
+let isLoading = false;
+
+// ── Spawn floating crop particles ──────────────────────────────────
+(function spawnParticles() {
+  const emojis = ["🌾","🌻","🌽","🍚","🌿","🌱","🌾","🌻","🌽"];
+  emojis.forEach(function(em) {
+    var el = document.createElement("div");
+    el.className = "particle";
+    el.textContent = em;
+    el.style.left   = (Math.random() * 100) + "%";
+    el.style.bottom = "-5%";
+    el.style.fontSize = (Math.random() * 16 + 10) + "px";
+    el.style.animationDuration = (Math.random() * 8 + 8) + "s";
+    el.style.animationDelay    = (Math.random() * 8) + "s";
+    document.body.appendChild(el);
+  });
+})();
+
+// ── Init ───────────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", function() {
+  if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+    document.getElementById("apiBanner").classList.add("show");
+  }
+  appendBot(
+    "🌾 <strong>Sat Sri Akal!</strong> I'm your <strong>Kisan Mandi AI Advisor</strong>.<br><br>" +
+    "I can help you with:<br>" +
+    "<ul>" +
+    "<li>📈 Crop price predictions &amp; best time to sell</li>" +
+    "<li>🌦️ Weather impact on your crops</li>" +
+    "<li>🏛️ Government schemes (PM-KISAN, MSP, eNAM)</li>" +
+    "<li>💡 Farming tips &amp; best practices</li>" +
+    "<li>💳 Loan &amp; insurance guidance</li>" +
+    "</ul><br>" +
+    "Aap kya jaanna chahte hain aaj? <em>(What would you like to know today?)</em>"
+  );
+  document.getElementById("userInput").focus();
+});
+
+// ── Auto-resize textarea ───────────────────────────────────────────
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
 }
 
-// MESSAGE UI
-function addMessage(sender, text) {
-    const div = document.createElement("div");
-    div.className = 'message ' + (sender === 'user' ? 'user' : 'bot');
-    div.textContent = text;
-    document.getElementById("chatMessages").appendChild(div);
-    // scroll to bottom smoothly
-    const chat = document.getElementById("chatMessages");
-    chat.scrollTop = chat.scrollHeight;
-}
-
-// SEND MESSAGE
-async function sendMessage() {
-    const input = document.getElementById("userInput");
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    addMessage("user", msg);
-    input.value = "";
-    document.getElementById("loadingIndicator").style.display = "block";
-
-    const message = msg.toLowerCase();
-
-    // PRICE QUERY
-    if (message.includes("price") || message.includes("rate")) {
-        const crop = getCrop(message);
-        if (crop) {
-            await fetchPrice(crop);
-            return;
-        }
-    }
-
-    // HARVEST QUERY
-    if (message.includes("harvest") || message.includes("season")) {
-        addMessage("bot", getHarvestAdvice(message));
-        document.getElementById("loadingIndicator").style.display = "none";
-        return;
-    }
-
-    // SELLING
-    if (message.includes("sell")) {
-        addMessage("bot",
-            " How to sell crops:\n" +
-            "1. Login as Farmer\n" +
-            "2. Go to Marketplace\n" +
-            "3. Add crop details\n" +
-            "4. Set price & quantity\n" +
-            "5. Buyers contact you directly"
-        );
-        document.getElementById("loadingIndicator").style.display = "none";
-        return;
-    }
-
-    // For other queries, forward to backend AI/chat endpoint
-    try {
-        const res = await fetch(`${API_BASE}/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ message: msg, type: 'general' })
-        });
-
-        if (res.ok) {
-            const data = await res.json();
-            addMessage('bot', data.bot_response || "I didn't get a response.");
-        } else {
-            // Fallback message when backend fails
-            addMessage("bot",
-                "I didn’t understand that.\nTry:\n• current wheat price\n• best season to harvest wheat"
-            );
-        }
-    } catch (e) {
-        addMessage('bot', 'Error contacting chat service.');
-    }
-    document.getElementById("loadingIndicator").style.display = "none";
-}
-
-// FETCH PRICE
-async function fetchPrice(crop) {
-    try {
-        const res = await fetch(`${API_BASE}/prices`);
-        const prices = await res.json();
-        const matches = prices.filter(p => p.crop_name.toLowerCase() === crop);
-
-        if (matches.length === 0) {
-            addMessage("bot", `No price data for ${crop}.`);
-        } else {
-            let reply = ` ${crop.toUpperCase()} Prices:\n`;
-            matches.forEach(p => {
-                reply += `${p.location}: ₹${p.price}/quintal\n`;
-            });
-            addMessage("bot", reply);
-        }
-    } catch {
-        addMessage("bot", "Error fetching prices.");
-    }
-    document.getElementById("loadingIndicator").style.display = "none";
-}
-
-// CROP DETECTOR
-function getCrop(msg) {
-    const crops = ["wheat","rice","cotton","sugarcane","tomato"];
-    return crops.find(c => msg.includes(c));
-}
-
-// HARVEST INFO
-function getHarvestAdvice(msg) {
-    if (msg.includes("wheat")) {
-        return " Wheat Harvest (India):\n\n" +
-               "• Best time: March – April\n" +
-               "• Weather: Dry & warm\n" +
-               "• Avoid rainfall\n\n" +
-               "This gives best quality & price.";
-    }
-    return "Harvest during dry weather when market demand is high.";
-}
-
-// QUICK ASK
-function askQuick(q) {
-    document.getElementById("userInput").value = q;
+// ── Enter key handler ──────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
     sendMessage();
+  }
 }
 
-// LOGOUT
-function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "login.html";
+// ── Quick prompt click ─────────────────────────────────────────────
+function quickSend(btn) {
+  document.getElementById("userInput").value = btn.textContent.trim();
+  sendMessage();
 }
 
-initChatbot();
+// ── Clear chat ─────────────────────────────────────────────────────
+function clearChat() {
+  history = [];
+  document.getElementById("messages").innerHTML = "";
+  appendBot("🌾 Chat cleared! How can I help you, Kisan bhai?");
+}
+
+// ── Main send function ─────────────────────────────────────────────
+async function sendMessage() {
+  var input = document.getElementById("userInput");
+  var text  = input.value.trim();
+  if (!text || isLoading) return;
+
+  if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+    showError("⚠️ Please add your Groq API key in the script. Get it from: console.groq.com/keys");
+    return;
+  }
+
+  // Add to UI + history
+  appendUser(text);
+  input.value = "";
+  input.style.height = "auto";
+  history.push({ role: "user", content: text });
+
+  var typingId = showTyping();
+  setLoading(true);
+
+  try {
+    // Groq uses OpenAI-style messages: system + user/assistant history
+    var messages = [{ role: "system", content: SYSTEM }];
+    history.forEach(function(m) {
+      messages.push({ role: m.role === "assistant" ? "assistant" : "user", content: m.content });
+    });
+
+    var res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + API_KEY
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: messages,
+        max_tokens: 1024,
+        temperature: 0.7
+      })
+    });
+
+    removeTyping(typingId);
+
+    if (!res.ok) {
+      var errData = await res.json().catch(function() { return {}; });
+      var msg = (errData.error && errData.error.message) ? errData.error.message : ("API error (status " + res.status + ")");
+      throw new Error(msg);
+    }
+
+    var data  = await res.json();
+    var reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+                ? data.choices[0].message.content
+                : "Sorry, I couldn't process that. Please try again.";
+
+    history.push({ role: "assistant", content: reply });
+    appendBot(mdToHtml(reply));
+
+  } catch (err) {
+    removeTyping(typingId);
+    showError("❌ " + err.message);
+  }
+
+  setLoading(false);
+  document.getElementById("userInput").focus();
+}
+
+// ── DOM helpers ────────────────────────────────────────────────────
+function appendUser(text) {
+  var msgs = document.getElementById("messages");
+  var row  = document.createElement("div");
+  row.className = "msg-row user";
+  row.innerHTML =
+    '<div class="bubble user">' + esc(text).replace(/\n/g, "<br>") + "</div>" +
+    '<div class="avatar-sm av-user">👨‍🌾</div>';
+  msgs.appendChild(row);
+  scroll();
+}
+
+function appendBot(html) {
+  var msgs = document.getElementById("messages");
+  var row  = document.createElement("div");
+  row.className = "msg-row bot";
+  row.innerHTML =
+    '<div class="avatar-sm av-bot">🤖</div>' +
+    '<div class="bubble bot">' + html + "</div>";
+  msgs.appendChild(row);
+  scroll();
+}
+
+function showTyping() {
+  var msgs = document.getElementById("messages");
+  var id   = "typ-" + Date.now();
+  var row  = document.createElement("div");
+  row.id = id;
+  row.className = "msg-row bot";
+  row.innerHTML =
+    '<div class="avatar-sm av-bot">🤖</div>' +
+    '<div class="typing-box"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  msgs.appendChild(row);
+  scroll();
+  return id;
+}
+
+function removeTyping(id) {
+  var el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function showError(msg) {
+  var msgs = document.getElementById("messages");
+  var div  = document.createElement("div");
+  div.className = "err-msg";
+  div.textContent = msg;
+  msgs.appendChild(div);
+  scroll();
+}
+
+function scroll() {
+  var msgs = document.getElementById("messages");
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setLoading(on) {
+  isLoading = on;
+  document.getElementById("sendBtn").disabled = on;
+  document.getElementById("sendIcon").style.display = on ? "none" : "flex";
+  document.getElementById("spinner").style.display  = on ? "block" : "none";
+  document.querySelectorAll(".qbtn").forEach(function(b){ b.disabled = on; });
+}
+
+// ── Escape HTML ────────────────────────────────────────────────────
+function esc(t) {
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ── Basic Markdown → HTML ──────────────────────────────────────────
+function mdToHtml(text) {
+  var s = esc(text);
+
+  // Bold **text**
+  s = s.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  // Italic *text*
+  s = s.replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+  // Convert lines starting with • or - into list items
+  var lines = s.split("\n");
+  var out   = [];
+  var inList = false;
+
+  lines.forEach(function(line) {
+    var liMatch = line.match(/^[•\-\*]\s+(.+)/);
+    if (liMatch) {
+      if (!inList) { out.push("<ul>"); inList = true; }
+      out.push("<li>" + liMatch[1] + "</li>");
+    } else {
+      if (inList) { out.push("</ul>"); inList = false; }
+      out.push(line === "" ? "<br>" : line);
+    }
+  });
+  if (inList) out.push("</ul>");
+
+  // Join and convert remaining newlines
+  return out.join("\n").replace(/\n/g, "<br>");
+}
 </script>
-
 </body>
 </html>

@@ -8,17 +8,17 @@
     --primary-color: #2ecc71;
     --secondary-color: #27ae60;
     --danger-color: #e74c3c;
-    --dark-color: #2c3e50;
+    --dark-color: #1a3c1e;
     --light-color: #ecf0f1;
     --text-color: #34495e;
 }
 
-body {
+/* body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     color: var(--text-color);
     line-height: 1.6;
-}
+} */
 
 /* Navigation */
 nav {
@@ -36,6 +36,7 @@ nav {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    
 }
 
 .logo {

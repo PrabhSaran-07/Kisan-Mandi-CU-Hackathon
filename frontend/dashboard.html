@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard - Kisan Mandi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="logo"> Kisan Mandi</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="marketplace.html">Marketplace</a></li>
+                <li><a href="chatbot.html">AI Chatbot</a></li>
+                <li><a href="advisor.html">AI Advisor</a></li>
+                <li><a href="prices.html">Prices</a></li>
+                <li id="userGreeting" style="color: #2ecc71;"></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
 
     <style>
         :root {
@@ -49,7 +66,7 @@
             align-items: center;
             justify-content: space-between;
             height: 64px;
-            border-bottom: 2px solid #e8a820;
+            border-bottom: 2px solid var(--gold);
         }
 
         .nav-logo {
@@ -59,12 +76,12 @@
             font-family: 'Playfair Display', serif;
             font-size: 1.4rem;
             font-weight: 900;
-            color: #e8a820;
+            color: var(--gold);
             letter-spacing: 1px;
         }
 
         .nav-logo span {
-            color: #ffffff;
+            color: var(--white);
             font-weight: 700;
         }
 
@@ -74,7 +91,7 @@
         }
 
         .nav-links a {
-            color: #a8d5a2;
+            color: var(--green-light);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -82,7 +99,7 @@
         }
 
         .nav-links a:hover {
-            color: #e8a820;
+            color: var(--gold);
         }
 
         .nav-btns {
@@ -92,8 +109,8 @@
 
         .btn-outline {
             padding: 8px 18px;
-            border: 1.5px solid #e8a820;
-            color: #e8a820;
+            border: 1.5px solid var(--gold);
+            color: var(--gold);
             background: transparent;
             border-radius: 6px;
             cursor: pointer;
@@ -104,15 +121,15 @@
         }
 
         .btn-outline:hover {
-            background: #e8a820;
-            color: #1a3c1e;
+            background: var(--gold);
+            color: var(--green-deep);
         }
 
         .btn-primary {
             padding: 8px 18px;
             border: none;
-            background: #e8a820;
-            color: #1a3c1e;
+            background: var(--gold);
+            color: var(--green-deep);
             border-radius: 6px;
             cursor: pointer;
             font-family: 'DM Sans', sans-serif;
@@ -122,9 +139,10 @@
         }
 
         .btn-primary:hover {
-            background: #a8d5a2;
+            background: var(--gold-light);
             transform: translateY(-1px);
         }
+
 
         /* HERO */
         .hero {
@@ -663,6 +681,7 @@
             outline: none;
             transition: border 0.2s;
             -webkit-appearance: none;
+            appearance: none;
         }
 
         .form-row input::placeholder {
@@ -738,7 +757,11 @@
             transform: translateY(-1px);
         }
 
-        .sell-side-info {}
+        .sell-side-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
 
         .info-card {
             background: rgba(255, 255, 255, 0.07);
@@ -757,7 +780,9 @@
             gap: 8px;
         }
 
-        .nearby-buyers {}
+        .nearby-buyers {
+            overflow: hidden;
+        }
 
         .buyer-row {
             display: flex;
@@ -792,138 +817,221 @@
         }
 
         /* Price ticker */
-  .ticker-bar {
-    background: var(--green-deep); padding: 8px 0; overflow: hidden;
-    border-bottom: 1px solid rgba(232,168,32,0.3);
-    margin-top: 64px;
-  }
-  .ticker-track {
-    display: flex; gap: 3rem;
-    animation: scroll 20s linear infinite;
-    white-space: nowrap;
-  }
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  .ticker-item { display: flex; gap: 0.5rem; font-size: 0.8rem; }
-  .ticker-name { color: var(--green-light); }
-  .ticker-price { color: var(--gold); font-family: 'Space Mono', monospace; font-weight: 700; }
-  .ticker-chg { font-size: 0.72rem; }
+        .ticker-bar {
+            background: var(--green-deep);
+            padding: 8px 0;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(232, 168, 32, 0.3);
+            margin-top: 64px;
+        }
+
+        .ticker-track {
+            display: flex;
+            gap: 3rem;
+            animation: scroll 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .ticker-item {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .ticker-name {
+            color: var(--green-light);
+        }
+
+        .ticker-price {
+            color: var(--gold);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+        }
+
+        .ticker-chg {
+            font-size: 0.72rem;
+        }
     </style>
 
 </head>
 
-<body>
+<!-- NAVIGATION -->
+<nav>
+    <div class="nav-logo">🌾 Kisan<span>Mandi</span></div>
+    <div class="nav-links">
+        <a href="#how">How it Works</a>
+        <a href="#marketplace">Marketplace</a>
+        <a href="prices.html">Price</a>
+        <a href="#sell"> Price Check</a>
+        <a href="chatbot.html">AI Chatbot</a>
+
+        <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+        
+    </div>
+    
+</nav>
 
 
-    <!-- PRICE TICKER -->
-    <div class="ticker-bar">
-        <div class="ticker-track" id="ticker">
-            <span class="ticker-item"><span class="ticker-name">Wheat</span><span
-                    class="ticker-price">₹2,340/q</span><span class="ticker-chg up">▲2.3%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
-                    class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Maize</span><span
-                    class="ticker-price">₹1,890/q</span><span class="ticker-chg down">▼0.8%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Tomato</span><span
-                    class="ticker-price">₹850/q</span><span class="ticker-chg up">▲5.2%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Potato</span><span
-                    class="ticker-price">₹620/q</span><span class="ticker-chg down">▼1.4%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Soybean</span><span
-                    class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Cotton</span><span
-                    class="ticker-price">₹6,200/q</span><span class="ticker-chg up">▲1.7%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Onion</span><span
-                    class="ticker-price">₹1,250/q</span><span class="ticker-chg down">▼2.1%</span></span>
-            <!-- Duplicate for seamless loop -->
-            <span class="ticker-item"><span class="ticker-name">Wheat</span><span
-                    class="ticker-price">₹2,340/q</span><span class="ticker-chg up">▲2.3%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
-                    class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Maize</span><span
-                    class="ticker-price">₹1,890/q</span><span class="ticker-chg down">▼0.8%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Tomato</span><span
-                    class="ticker-price">₹850/q</span><span class="ticker-chg up">▲5.2%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Potato</span><span
-                    class="ticker-price">₹620/q</span><span class="ticker-chg down">▼1.4%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Soybean</span><span
-                    class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Cotton</span><span
-                    class="ticker-price">₹6,200/q</span><span class="ticker-chg up">▲1.7%</span></span>
-            <span class="ticker-item"><span class="ticker-name">Onion</span><span
-                    class="ticker-price">₹1,250/q</span><span class="ticker-chg down">▼2.1%</span></span>
+<!-- PRICE TICKER -->
+<div class="ticker-bar">
+    <div class="ticker-track" id="ticker">
+        <span class="ticker-item"><span class="ticker-name">Wheat</span><span class="ticker-price">₹2,340/q</span><span
+                class="ticker-chg up">▲2.3%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
+                class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Maize</span><span class="ticker-price">₹1,890/q</span><span
+                class="ticker-chg down">▼0.8%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Tomato</span><span class="ticker-price">₹850/q</span><span
+                class="ticker-chg up">▲5.2%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Potato</span><span class="ticker-price">₹620/q</span><span
+                class="ticker-chg down">▼1.4%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Soybean</span><span
+                class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Cotton</span><span class="ticker-price">₹6,200/q</span><span
+                class="ticker-chg up">▲1.7%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Onion</span><span class="ticker-price">₹1,250/q</span><span
+                class="ticker-chg down">▼2.1%</span></span>
+        <!-- Duplicate for seamless loop -->
+        <span class="ticker-item"><span class="ticker-name">Wheat</span><span class="ticker-price">₹2,340/q</span><span
+                class="ticker-chg up">▲2.3%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Rice (Basmati)</span><span
+                class="ticker-price">₹4,120/q</span><span class="ticker-chg up">▲1.1%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Maize</span><span class="ticker-price">₹1,890/q</span><span
+                class="ticker-chg down">▼0.8%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Tomato</span><span class="ticker-price">₹850/q</span><span
+                class="ticker-chg up">▲5.2%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Potato</span><span class="ticker-price">₹620/q</span><span
+                class="ticker-chg down">▼1.4%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Soybean</span><span
+                class="ticker-price">₹3,780/q</span><span class="ticker-chg up">▲0.9%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Cotton</span><span class="ticker-price">₹6,200/q</span><span
+                class="ticker-chg up">▲1.7%</span></span>
+        <span class="ticker-item"><span class="ticker-name">Onion</span><span class="ticker-price">₹1,250/q</span><span
+                class="ticker-chg down">▼2.1%</span></span>
+    </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="fade-up">
+            <div class="hero-badge"><span class="live-dot"></span> AI-Powered • Live Prices</div>
+            <h1>India's Smartest <em>Agri</em>Marketplace</h1>
+            <p>Kisan Mandi connects farmers directly with buyers — eliminating middlemen, ensuring fair AI-predicted
+                prices, and enabling instant UPI payments.</p>
+            <div class="hero-actions">
+                <button class="hero-cta" onclick="scrollTo('marketplace')">🌾 Browse Crops</button>
+                <button class="hero-cta-sec" onclick="scrollTo('sell')">Sell Your Crop →</button>
+            </div>
+        </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+    <div class="container">
+        <div class="section-label">System Workflow</div>
+        <div class="section-title">How <em>Kisan Mandi</em> Works</div>
+        <p class="section-sub">From listing your crop to payment in your account — the entire process is
+            transparent, fast, and fair.</p>
+        <div class="workflow">
+            <div class="workflow-step fade-up">
+                <span class="step-num">01</span>
+                <div class="step-icon">🏪</div>
+                <div class="step-title">List Your Produce</div>
+                <div class="step-desc">Farmers upload crop details — type, quantity, quality grade, and location. No
+                    middleman required.</div>
+            </div>
+            <div class="workflow-step fade-up delay-1">
+                <span class="step-num">02</span>
+                <div class="step-icon">🤖</div>
+                <div class="step-title">AI Suggests Optimal Price</div>
+                <div class="step-desc">Our ML model analyzes mandi rates, demand trends, and seasonality to give you
+                    the best fair price.</div>
+            </div>
+            <div class="workflow-step fade-up delay-2">
+                <span class="step-num">03</span>
+                <div class="step-icon">📍</div>
+                <div class="step-title">Location-Based Buyer Matching</div>
+                <div class="step-desc">Smart geo-matching connects you with verified buyers closest to your
+                    location, reducing logistics cost.</div>
+            </div>
+            <div class="workflow-step fade-up">
+                <span class="step-num">04</span>
+                <div class="step-icon">📈</div>
+                <div class="step-title">AI Price Prediction</div>
+                <div class="step-desc">View price forecasts for the next 7–30 days so you can time your sale for
+                    maximum profit.</div>
+            </div>
+            <div class="workflow-step fade-up delay-1">
+                <span class="step-num">05</span>
+                <div class="step-icon">🤝</div>
+                <div class="step-title">Deal Confirmation</div>
+                <div class="step-desc">Buyer and seller confirm the deal digitally. All agreements are recorded and
+                    dispute-protected.</div>
+            </div>
+            <div class="workflow-step fade-up delay-2">
+                <span class="step-num">06</span>
+                <div class="step-icon">💸</div>
+                <div class="step-title">Instant UPI Payment</div>
+                <div class="step-desc">Payment hits your UPI-linked bank account within seconds of deal
+                    confirmation. No delays ever.</div>
+            </div>
         </div>
     </div>
+    <!-- MARKETPLACE -->
+    <section class="marketplace" id="marketplace">
+        <div class="container">
+            <div class="section-label">State-wise Mandi</div>
+            <div class="section-title">Live <em>Market</em> Prices</div>
 
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="fade-up">
-                <div class="hero-badge"><span class="live-dot"></span> AI-Powered • Live Prices</div>
-                <h1>India's Smartest <em>Agri</em>Marketplace</h1>
-                <p>Kisan Mandi connects farmers directly with buyers — eliminating middlemen, ensuring fair AI-predicted
-                    prices, and enabling instant UPI payments.</p>
-                <div class="hero-actions">
-                    <button class="hero-cta" onclick="scrollTo('marketplace')">🌾 Browse Crops</button>
-                    
+            <div class="market-controls">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" id="cropSearch" placeholder="Search crops e.g. Wheat, Basmati..."
+                        oninput="filterCrops()">
+                </div>
+                <select id="stateSelect" class="filter-btn" style="min-width: 150px;"
+                    onchange="selectState(this.value)">
+                    <!-- Options will be injected here -->
+                </select>
+                <button class="filter-btn active" id="compareBtn" onclick="toggleCompareMode()">⚖️ Compare
+                    States</button>
+            </div>
+
+            <!-- Comparison UI (Hidden by default) -->
+            <div id="compareUI"
+                style="display:none; background: #fff; padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; border: 2px solid var(--gold);">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="color:var(--green-deep)">Compare Mandi Prices</h3>
+                    <button onclick="toggleCompareMode()"
+                        style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">✕</button>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center;">
+                    <select id="state1" class="filter-btn" style="width:100%" onchange="updateComparison()"></select>
+                    <span style="font-weight:bold; color:var(--gold)">VS</span>
+                    <select id="state2" class="filter-btn" style="width:100%" onchange="updateComparison()"></select>
+                </div>
+                <div id="comparisonResults" style="margin-top: 1.5rem;">
+                    <!-- Comparison table injected here -->
                 </div>
             </div>
-    </section>
 
-    <!-- HOW IT WORKS -->
-    <section class="how" id="how">
-        <div class="container">
-            <div class="section-label">System Workflow</div>
-            <div class="section-title">How <em>Kisan Mandi</em> Works</div>
-            <p class="section-sub">From listing your crop to payment in your account — the entire process is
-                transparent, fast, and fair.</p>
-            <div class="workflow">
-                <div class="workflow-step fade-up">
-                    <span class="step-num">01</span>
-                    <div class="step-icon">🏪</div>
-                    <div class="step-title">List Your Produce</div>
-                    <div class="step-desc">Farmers upload crop details — type, quantity, quality grade, and location. No
-                        middleman required.</div>
-                </div>
-                <div class="workflow-step fade-up delay-1">
-                    <span class="step-num">02</span>
-                    <div class="step-icon">🤖</div>
-                    <div class="step-title">AI Suggests Optimal Price</div>
-                    <div class="step-desc">Our ML model analyzes mandi rates, demand trends, and seasonality to give you
-                        the best fair price.</div>
-                </div>
-                <div class="workflow-step fade-up delay-2">
-                    <span class="step-num">03</span>
-                    <div class="step-icon">📍</div>
-                    <div class="step-title">Location-Based Buyer Matching</div>
-                    <div class="step-desc">Smart geo-matching connects you with verified buyers closest to your
-                        location, reducing logistics cost.</div>
-                </div>
-                <div class="workflow-step fade-up">
-                    <span class="step-num">04</span>
-                    <div class="step-icon">📈</div>
-                    <div class="step-title">AI Price Prediction</div>
-                    <div class="step-desc">View price forecasts for the next 7–30 days so you can time your sale for
-                        maximum profit.</div>
-                </div>
-                <div class="workflow-step fade-up delay-1">
-                    <span class="step-num">05</span>
-                    <div class="step-icon">🤝</div>
-                    <div class="step-title">Deal Confirmation</div>
-                    <div class="step-desc">Buyer and seller confirm the deal digitally. All agreements are recorded and
-                        dispute-protected.</div>
-                </div>
-                <div class="workflow-step fade-up delay-2">
-                    <span class="step-num">06</span>
-                    <div class="step-icon">💸</div>
-                    <div class="step-title">Instant UPI Payment</div>
-                    <div class="step-desc">Payment hits your UPI-linked bank account within seconds of deal
-                        confirmation. No delays ever.</div>
-                </div>
+            <div class="crops-grid" id="cropsGrid">
+                <!-- Crop cards injected here -->
             </div>
         </div>
     </section>
+
 
 
     <!-- SELL -->
@@ -983,7 +1091,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="submit-btn" onclick="submitListing()">🌾 List My Crop for Sale</button>
+                    
                 </div>
                 <div class="sell-side-info">
                     <div class="info-card nearby-buyers">
@@ -1030,6 +1138,237 @@
 
 
 
-</body>
+    <script>
+        const marketData = {
+            "Punjab": [
+                { name: "Wheat", price: 2340, ai: 2380, qty: "120 Quintals", grade: "Grade A", farmer: "Ramesh Kumar", loc: "Ludhiana, PB", img: "🌾" },
+                { name: "Basmati Rice", price: 4050, ai: 4120, qty: "80 Quintals", grade: "Grade A", farmer: "Gurpreet Singh", loc: "Amritsar, PB", img: "🍚" },
+                { name: "Maize", price: 1850, ai: 1890, qty: "200 Quintals", grade: "Grade B", farmer: "Harinder Kaur", loc: "Patiala, PB", img: "🌽" },
+                { name: "Tomato", price: 820, ai: 850, qty: "40 Quintals", grade: "Grade A", farmer: "Suresh Patel", loc: "Jalandhar, PB", img: "🍅" },
+                { name: "Potato", price: 600, ai: 620, qty: "150 Quintals", grade: "Grade B", farmer: "Baljit Singh", loc: "Ferozpur, PB", img: "🥔" },
+                { name: "Onion", price: 1200, ai: 1250, qty: "60 Quintals", grade: "Grade A", farmer: "Priya Devi", loc: "Moga, PB", img: "🧅" },
+                { name: "Soybean", price: 3700, ai: 3780, qty: "90 Quintals", grade: "Grade A", farmer: "Manjit Rana", loc: "Bathinda, PB", img: "🫘" },
+                { name: "Cotton", price: 6100, ai: 6200, qty: "70 Quintals", grade: "Grade A", farmer: "Vikram Sharma", loc: "Sangrur, PB", img: "☁️" },
+                { name: "Mustard", price: 5400, ai: 5500, qty: "45 Quintals", grade: "Grade A", farmer: "Jaspal Singh", loc: "Kapurthala, PB", img: "🌼" },
+                { name: "Green Gram", price: 7200, ai: 7350, qty: "30 Quintals", grade: "Grade A", farmer: "Amarjot Kaur", loc: "Hoshiarpur, PB", img: "🫛" }
+            ],
+            "Haryana": [
+                { name: "Wheat", price: 2320, ai: 2360, qty: "150 Quintals", grade: "Grade A", farmer: "Deepak Yadav", loc: "Karnal, HR", img: "🌾" },
+                { name: "Basmati Rice", price: 3950, ai: 4050, qty: "100 Quintals", grade: "Grade A", farmer: "Sanjay Gill", loc: "Panipat, HR", img: "🍚" },
+                { name: "Maize", price: 1820, ai: 1860, qty: "180 Quintals", grade: "Grade B", farmer: "Rajesh Dalal", loc: "Rohtak, HR", img: "🌽" },
+                { name: "Tomato", price: 780, ai: 820, qty: "60 Quintals", grade: "Grade B", farmer: "Sunil Beniwal", loc: "Hisar, HR", img: "🍅" },
+                { name: "Potato", price: 650, ai: 680, qty: "120 Quintals", grade: "Grade A", farmer: "Amit Punia", loc: "Ambala, HR", img: "🥔" },
+                { name: "Onion", price: 1150, ai: 1200, qty: "80 Quintals", grade: "Grade A", farmer: "Mandeep Singh", loc: "Sirsa, HR", img: "🧅" },
+                { name: "Soybean", price: 3650, ai: 3750, qty: "110 Quintals", grade: "Grade A", farmer: "Vikas Hooda", loc: "Jind, HR", img: "🫘" },
+                { name: "Cotton", price: 6050, ai: 6150, qty: "95 Quintals", grade: "Grade A", farmer: "Naveen Malik", loc: "Fatehabad, HR", img: "☁️" },
+                { name: "Bajra", price: 2100, ai: 2150, qty: "200 Quintals", grade: "Grade A", farmer: "Kuldeep Bishnoi", loc: "Bhiwani, HR", img: "🌾" },
+                { name: "Cauliflower", price: 1400, ai: 1500, qty: "40 Quintals", grade: "Grade A", farmer: "Ravi Tevatia", loc: "Gurgaon, HR", img: "🥦" }
+            ],
+            "Uttar Pradesh": [
+                { name: "Wheat", price: 2280, ai: 2320, qty: "300 Quintals", grade: "Grade A", farmer: "Vijay Mishra", loc: "Bareilly, UP", img: "🌾" },
+                { name: "Rice", price: 2850, ai: 2950, qty: "500 Quintals", grade: "Grade B", farmer: "Anil Pandey", loc: "Varanasi, UP", img: "🍚" },
+                { name: "Sugarcane", price: 350, ai: 360, qty: "2000 Quintals", grade: "Grade A", farmer: "Suresh Tyagi", loc: "Meerut, UP", img: "🎋" },
+                { name: "Mango", price: 4500, ai: 4800, qty: "150 Quintals", grade: "Grade A", farmer: "Mohd. Arif", loc: "Lucknow, UP", img: "🥭" },
+                { name: "Potato", price: 580, ai: 600, qty: "1000 Quintals", grade: "Grade A", farmer: "Rajendra Kushwaha", loc: "Agra, UP", img: "🥔" },
+                { name: "Peas", price: 2800, ai: 3000, qty: "200 Quintals", grade: "Grade A", farmer: "Dharmendra Singh", loc: "Kanpur, UP", img: "🫛" },
+                { name: "Mustard", price: 5350, ai: 5450, qty: "400 Quintals", grade: "Grade A", farmer: "Shyam Lal", loc: "Aligarh, UP", img: "🌼" },
+                { name: "Garlic", price: 8500, ai: 9000, qty: "50 Quintals", grade: "Grade A", farmer: "Ram Gopal", loc: "Mainpuri, UP", img: "🧄" },
+                { name: "Guava", price: 1800, ai: 1950, qty: "300 Quintals", grade: "Grade A", farmer: "Shiv Prashad", loc: "Prayagraj, UP", img: "🍏" },
+                { name: "Pigeon Pea", price: 6800, ai: 7000, qty: "100 Quintals", grade: "Grade A", farmer: "Vinod Maurya", loc: "Gorakhpur, UP", img: "🫘" }
+            ],
+            "Maharashtra": [
+                { name: "Soybean", price: 3850, ai: 3950, qty: "400 Quintals", grade: "Grade A", farmer: "Amol Patil", loc: "Latur, MH", img: "🫘" },
+                { name: "Cotton", price: 6300, ai: 6450, qty: "300 Quintals", grade: "Grade A", farmer: "Gajanand Deshmukh", loc: "Amravati, MH", img: "☁️" },
+                { name: "Onion", price: 1450, ai: 1550, qty: "800 Quintals", grade: "Grade A", farmer: "Sagar Shinde", loc: "Nashik, MH", img: "🧅" },
+                { name: "Grapes", price: 5500, ai: 6000, qty: "200 Quintals", grade: "Grade A", farmer: "Rahul Chavan", loc: "Sangli, MH", img: "🍇" },
+                { name: "Sugarcane", price: 320, ai: 335, qty: "5000 Quintals", grade: "Grade A", farmer: "Nitin Pawar", loc: "Kolhapur, MH", img: "🎋" },
+                { name: "Turmeric", price: 7200, ai: 7500, qty: "100 Quintals", grade: "Grade A", farmer: "Vikas Kadam", loc: "Hingoli, MH", img: "🍠" },
+                { name: "Chickpea", price: 5100, ai: 5250, qty: "250 Quintals", grade: "Grade A", farmer: "Pankaj More", loc: "Akola, MH", img: "🫘" },
+                { name: "Pomegranate", price: 9000, ai: 9500, qty: "80 Quintals", grade: "Grade A", farmer: "Sanjay Raut", loc: "Solapur, MH", img: "🍎" },
+                { name: "Millets", price: 2500, ai: 2600, qty: "150 Quintals", grade: "Grade A", farmer: "Dinesh Gaikwad", loc: "Nanded, MH", img: "🌾" },
+                { name: "Banana", price: 1200, ai: 1300, qty: "600 Quintals", grade: "Grade A", farmer: "Kiran Shelke", loc: "Jalgaon, MH", img: "🍌" }
+            ],
+            "Rajasthan": [
+                { name: "Mustard", price: 5550, ai: 5700, qty: "500 Quintals", grade: "Grade A", farmer: "Hanuman Singh", loc: "Bharatpur, RJ", img: "🌼" },
+                { name: "Bajra", price: 2150, ai: 2200, qty: "800 Quintals", grade: "Grade A", farmer: "Ram Niwas", loc: "Alwar, RJ", img: "🌾" },
+                { name: "Moong Dal", price: 7400, ai: 7600, qty: "150 Quintals", grade: "Grade A", farmer: "Suresh Meena", loc: "Nagaur, RJ", img: "🫛" },
+                { name: "Cumin", price: 28000, ai: 30000, qty: "20 Quintals", grade: "Grade A", farmer: "Bhanwar Lal", loc: "Jodhpur, RJ", img: "🧂" },
+                { name: "Guar Seed", price: 5100, ai: 5250, qty: "300 Quintals", grade: "Grade A", farmer: "Vikram Gurjar", loc: "Bikaner, RJ", img: "🫘" },
+                { name: "Chili", price: 18000, ai: 19500, qty: "50 Quintals", grade: "Grade A", farmer: "Madan Saini", loc: "Mathania, RJ", img: "🌶️" },
+                { name: "Barley", price: 2050, ai: 2150, qty: "400 Quintals", grade: "Grade A", farmer: "Ratan Jat", loc: "Jaipur, RJ", img: "🌾" },
+                { name: "Groundnut", price: 6200, ai: 6400, qty: "250 Quintals", grade: "Grade A", farmer: "Pooran Mal", loc: "Churu, RJ", img: "🥜" },
+                { name: "Garlic", price: 8200, ai: 8500, qty: "100 Quintals", grade: "Grade A", farmer: "Jagdish Prasad", loc: "Kota, RJ", img: "🧄" },
+                { name: "Wheat", price: 2310, ai: 2350, qty: "600 Quintals", grade: "Grade A", farmer: "Shravan Choudhary", loc: "Ganganagar, RJ", img: "🌾" }
+            ]
+        };
 
+        let currentState = "Punjab";
+        let isCompareMode = false;
+
+        function init() {
+            populateStateDropdown();
+            renderCrops();
+            populateCompareDropdowns();
+        }
+
+        function populateStateDropdown() {
+            const select = document.getElementById('stateSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            Object.keys(marketData).forEach(state => {
+                const opt = document.createElement('option');
+                opt.value = state;
+                opt.innerText = state;
+                if (state === currentState) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function selectState(state) {
+            currentState = state;
+            renderCrops();
+        }
+
+        function renderCrops(filter = "") {
+            const grid = document.getElementById('cropsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const data = marketData[currentState].filter(crop =>
+                crop.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            data.forEach(crop => {
+                const card = `
+                    <div class="crop-card">
+                        <div class="crop-img">${crop.img}</div>
+                        <div class="crop-info">
+                            <h3>${crop.name}</h3>
+                            <div class="crop-meta">${crop.qty} · ${crop.grade}</div>
+                            <div class="crop-price-row">
+                                <span class="crop-price-main">₹${crop.price.toLocaleString()}/q</span>
+                                <span class="ai-suggest">AI: ₹${crop.ai.toLocaleString()}/q</span>
+                            </div>
+                            <div class="crop-farmer">
+                                👨‍🌾 ${crop.farmer} · 📍 ${crop.loc}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        function filterCrops() {
+            const query = document.getElementById('cropSearch').value;
+            renderCrops(query);
+        }
+
+        function toggleCompareMode() {
+            isCompareMode = !isCompareMode;
+            document.getElementById('compareUI').style.display = isCompareMode ? 'block' : 'none';
+            if (isCompareMode) {
+                updateComparison();
+                const el = document.getElementById('marketplace');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function populateCompareDropdowns() {
+            const s1 = document.getElementById('state1');
+            const s2 = document.getElementById('state2');
+            if (!s1 || !s2) return;
+            const states = Object.keys(marketData);
+
+            states.forEach((state) => {
+                s1.add(new Option(state, state));
+                s2.add(new Option(state, state));
+            });
+
+            s1.value = states[0];
+            s2.value = states[1];
+        }
+
+        function updateComparison() {
+            const state1 = document.getElementById('state1').value;
+            const state2 = document.getElementById('state2').value;
+            const target = document.getElementById('comparisonResults');
+
+            const commonCrops = marketData[state1].filter(c =>
+                marketData[state2].some(c2 => c2.name === c.name)
+            );
+
+            let html = `
+                <table style="width:100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: var(--green-deep); color: #fff;">
+                            <th style="padding: 12px; border-radius: 8px 0 0 0;">Crop</th>
+                            <th style="padding: 12px;">${state1}</th>
+                            <th style="padding: 12px;">${state2}</th>
+                            <th style="padding: 12px; border-radius: 0 8px 0 0;">Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            commonCrops.forEach(c => {
+                const c2 = marketData[state2].find(x => x.name === c.name);
+                const diff = c.price - c2.price;
+                const diffColor = diff < 0 ? "#6fcf97" : (diff > 0 ? "#eb5757" : "#text-mid");
+                const diffText = diff === 0 ? "Same" : (diff > 0 ? `+₹${diff}` : `-₹${Math.abs(diff)}`);
+
+                html += `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px; font-weight:bold;">${c.img} ${c.name}</td>
+                        <td style="padding: 12px;">₹${c.price.toLocaleString()}</td>
+                        <td style="padding: 12px;">₹${c2.price.toLocaleString()}</td>
+                        <td style="padding: 12px; color:${diffColor}; font-weight:bold;">${diffText}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            if (commonCrops.length === 0) {
+                html = `<p style="text-align:center; padding: 20px; color: var(--text-mid);">No common crops found to compare between these states.</p>`;
+            }
+            target.innerHTML = html;
+        }
+
+        function updateAIPrice() {
+            const crop = document.getElementById('cropSelect').value;
+            const qty = document.getElementById('qtyInput').value;
+            const grade = document.getElementById('gradeSelect').value;
+            const preview = document.getElementById('aiPreview');
+
+            if (!crop || !qty) {
+                if (preview) preview.style.display = 'none';
+                return;
+            }
+
+            if (preview) preview.style.display = 'block';
+
+            const basePrice = 2000;
+            let finalPrice = basePrice;
+
+            if (grade === "B") finalPrice *= 0.92;
+            if (grade === "C") finalPrice *= 0.8;
+
+            const pVal = document.getElementById('aiPriceVal');
+            const tVal = document.getElementById('totalVal');
+            if (pVal) pVal.innerText = `₹${Math.round(finalPrice).toLocaleString()}/q`;
+            if (tVal) tVal.innerText = `Total: ₹${Math.round(finalPrice * qty).toLocaleString()}`;
+        }
+
+        function submitListing() {
+            alert(`Success! Your listing has been published to the marketplace.`);
+        }
+
+        window.onload = init;
+
+         function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
 </html>

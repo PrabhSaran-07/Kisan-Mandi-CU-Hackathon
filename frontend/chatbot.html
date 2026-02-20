@@ -32,19 +32,15 @@
         </div>
 
         <!-- Chat Box -->
-        <div style="background:white;border-radius:8px;padding:1.5rem;
-             box-shadow:0 2px 10px rgba(0,0,0,0.1);
-             display:flex;flex-direction:column;height:600px;">
+            <div class="chat-wrapper" style="display:flex;flex-direction:column;height:600px;">
 
-            <div id="chatMessages"
-                 style="flex:1;overflow-y:auto;padding:1rem;background:#f8f9fa;border-radius:5px;">
+            <div id="chatMessages" class="chat-messages">
             </div>
 
-            <div style="display:flex;gap:0.5rem;margin-top:1rem;">
-                <input id="userInput" type="text" placeholder="Ask something..."
-                       style="flex:1;padding:1rem;border:1px solid #ccc;border-radius:5px;"
+            <div class="chat-controls">
+                <input id="userInput" class="input-field" type="text" placeholder="Ask something..."
                        onkeypress="if(event.key==='Enter')sendMessage()">
-                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                <button class="btn btn-primary btn-floating" onclick="sendMessage()">Send</button>
             </div>
 
             <div id="loadingIndicator" style="display:none;text-align:center;color:#888;margin-top:1rem;">
@@ -93,24 +89,12 @@ function initChatbot() {
 // MESSAGE UI
 function addMessage(sender, text) {
     const div = document.createElement("div");
-    div.style.marginBottom = "1rem";
-    div.style.padding = "1rem";
-    div.style.borderRadius = "5px";
-    div.style.maxWidth = "80%";
-
-    if (sender === "user") {
-        div.style.background = "#2ecc71";
-        div.style.color = "white";
-        div.style.marginLeft = "auto";
-        div.style.textAlign = "right";
-    } else {
-        div.style.background = "white";
-        div.style.borderLeft = "4px solid #2ecc71";
-    }
-
+    div.className = 'message ' + (sender === 'user' ? 'user' : 'bot');
     div.textContent = text;
     document.getElementById("chatMessages").appendChild(div);
-    document.getElementById("chatMessages").scrollTop = 999999;
+    // scroll to bottom smoothly
+    const chat = document.getElementById("chatMessages");
+    chat.scrollTop = chat.scrollHeight;
 }
 
 // SEND MESSAGE

@@ -155,9 +155,27 @@ async function sendMessage() {
         return;
     }
 
-    addMessage("bot",
-        "I didn’t understand that.\nTry:\n• current wheat price\n• best season to harvest wheat"
-    );
+    // For other queries, forward to backend AI/chat endpoint
+    try {
+        const res = await fetch(`${API_BASE}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ message: msg, type: 'general' })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            addMessage('bot', data.bot_response || "I didn't get a response.");
+        } else {
+            // Fallback message when backend fails
+            addMessage("bot",
+                "I didn’t understand that.\nTry:\n• current wheat price\n• best season to harvest wheat"
+            );
+        }
+    } catch (e) {
+        addMessage('bot', 'Error contacting chat service.');
+    }
     document.getElementById("loadingIndicator").style.display = "none";
 }
 

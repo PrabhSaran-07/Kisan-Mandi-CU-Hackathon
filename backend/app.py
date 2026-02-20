@@ -439,4 +439,10 @@ def not_found(error):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        # Ensure demo price data exists on startup for local development
+        try:
+            init_default_prices()
+        except Exception:
+            # If DB already has data or migrations are not ready, ignore
+            pass
     app.run(debug=True, host='0.0.0.0', port=5000)

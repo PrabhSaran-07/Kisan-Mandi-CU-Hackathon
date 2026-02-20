@@ -10,7 +10,7 @@
     <!-- Navigation -->
     <nav>
         <div class="navbar">
-            <a href="/" class="logo">🌾 Kisan Mandi</a>
+            <a href="/" class="logo"> Kisan Mandi</a>
             <ul class="nav-links">
                 <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="marketplace.html">Marketplace</a></li>
@@ -24,7 +24,7 @@
 
     <div class="container">
         <div class="card">
-            <div class="card-header">🛒 Digital Marketplace</div>
+            <div class="card-header"> Digital Marketplace</div>
             <p>Browse and purchase fresh crops directly from farmers.</p>
         </div>
 
@@ -156,11 +156,11 @@
                 crops.forEach(crop => {
                     html += `
                         <div class="crop-card">
-                            <div class="crop-image">🌾</div>
+                            <div class="crop-image"></div>
                             <div class="crop-info">
                                 <div class="crop-name">${crop.crop_name}</div>
                                 <div class="crop-price">₹${crop.price_per_unit}/kg</div>
-                                <div class="crop-location">📍 ${crop.location}</div>
+                                <div class="crop-location"> ${crop.location}</div>
                                 <p><strong>Available:</strong> ${crop.quantity} ${crop.unit}</p>
                                 <p><strong>Seller:</strong> ${crop.seller.username}</p>
                                 <p style="font-size: 0.9rem; color: #95a5a6;">${crop.category}</p>

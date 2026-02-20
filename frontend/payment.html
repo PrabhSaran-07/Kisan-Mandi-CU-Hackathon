@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="card" style="max-width: 600px; margin: 3rem auto;">
-            <div class="card-header" style="text-align: center;">💳 Payment Gateway</div>
+            <div class="card-header" style="text-align: center;"> Payment Gateway</div>
 
             <div id="alertContainer"></div>
 
@@ -21,11 +21,11 @@
                 <h3 style="margin-top: 2rem;">Payment Method</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
                     <div style="padding: 1rem; border: 2px solid #bdc3c7; border-radius: 5px; cursor: pointer; text-align: center;" onclick="selectPaymentMethod('upi')">
-                        <div style="font-size: 2rem;">📱</div>
+                        <div style="font-size: 2rem;"></div>
                         <div>UPI</div>
                     </div>
                     <div style="padding: 1rem; border: 2px solid #bdc3c7; border-radius: 5px; cursor: pointer; text-align: center;" onclick="selectPaymentMethod('card')">
-                        <div style="font-size: 2rem;">💳</div>
+                        <div style="font-size: 2rem;"></div>
                         <div>Card/Net Banking</div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                 <!-- Mock Razorpay Form -->
                 <div id="razorpayForm" style="display: none;">
                     <div style="background: #f0f0f0; padding: 2rem; border-radius: 8px; text-align: center; margin: 2rem 0;">
-                        <h3>🔒 Razorpay Test Payment</h3>
+                        <h3> Razorpay Test Payment</h3>
                         <p style="margin: 1rem 0; color: #95a5a6;">This is a demo payment screen. In production, Razorpay would handle the payment.</p>
                         <p><strong>Test Card Numbers:</strong></p>
                         <ul style="text-align: left; display: inline-block; color: #7f8c8d;">
@@ -78,7 +78,7 @@
                 </div>
 
                 <div style="margin-top: 2rem; padding: 1rem; background: #e8f5e9; border-radius: 5px; border-left: 4px solid #2ecc71;">
-                    <p style="font-size: 0.9rem; color: #558b2f;"><strong>💡 Demo Info:</strong> This payment interface is for demonstration. In production, actual Razorpay integration would process real payments.</p>
+                    <p style="font-size: 0.9rem; color: #558b2f;"><strong> Demo Info:</strong> This payment interface is for demonstration. In production, actual Razorpay integration would process real payments.</p>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@
             </div>
 
             <div id="failureMessage" style="display: none; text-align: center;">
-                <div style="font-size: 3rem; color: #e74c3c; margin: 2rem 0;">❌</div>
+                <div style="font-size: 3rem; color: #e74c3c; margin: 2rem 0;"></div>
                 <h2 style="color: #e74c3c;">Payment Failed</h2>
                 <p id="failureReason">An error occurred. Please try again.</p>
                 <button class="btn btn-primary" style="margin-top: 2rem;" onclick="location.reload()">Try Again</button>

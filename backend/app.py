@@ -305,7 +305,7 @@ def chat():
                 # Use intelligent fallback for quota/rate limit issues
                 use_fallback = True
             elif 'Authentication' in error_str or 'unauthorized' in error_str or 'api_key' in error_str:
-                bot_response = "❌ Authentication error: Invalid OpenAI API key. Please check your configuration."
+                bot_response = " Authentication error: Invalid OpenAI API key. Please check your configuration."
                 return jsonify({
                     'user_message': user_message,
                     'bot_response': bot_response,
@@ -347,26 +347,26 @@ def get_intelligent_fallback_response(message, msg_type):
         price_keywords = ['price', 'rate', 'market', 'profit']
         
         if any(word in message_lower for word in weather_keywords) and any(word in message_lower for word in price_keywords):
-            return "📊 To decide when to sell your crop:\n\n1. **Monitor Weather**: Check monsoon timings, rainfall patterns, and temperature forecasts. Good harvest weather = better quality = higher prices.\n\n2. **Check Market Prices**: Use our Prices section to track commodity rates. Sell when prices are high.\n\n3. **Timing Strategy**: \n   - Wheat: Sell March-April for best prices\n   - Rice: Peak prices June-July\n   - Cotton: October-November highest demand\n   - Vegetables: Post-harvest season (high demand, seasonal gluts)\n\n4. **Use Kisan Mandi**: List your crops when prices are favorable and weather is stable.\n\nWould you like specific advice for a particular crop?"
+            return " To decide when to sell your crop:\n\n1. **Monitor Weather**: Check monsoon timings, rainfall patterns, and temperature forecasts. Good harvest weather = better quality = higher prices.\n\n2. **Check Market Prices**: Use our Prices section to track commodity rates. Sell when prices are high.\n\n3. **Timing Strategy**: \n   - Wheat: Sell March-April for best prices\n   - Rice: Peak prices June-July\n   - Cotton: October-November highest demand\n   - Vegetables: Post-harvest season (high demand, seasonal gluts)\n\n4. **Use Kisan Mandi**: List your crops when prices are favorable and weather is stable.\n\nWould you like specific advice for a particular crop?"
         elif any(word in message_lower for word in weather_keywords):
-            return "🌤️ **Weather & Crop Selling**:\n\nGood weather conditions = Better crop quality = Higher market value\n\nCheck our Prices page to see current market rates and list your crops when conditions are optimal. Use the Marketplace to connect directly with buyers!"
+            return " **Weather & Crop Selling**:\n\nGood weather conditions = Better crop quality = Higher market value\n\nCheck our Prices page to see current market rates and list your crops when conditions are optimal. Use the Marketplace to connect directly with buyers!"
         elif any(word in message_lower for word in price_keywords):
-            return "💰 **Getting Best Prices**:\n\n1. Visit our Prices page to check current market rates\n2. Harvest crops when market demand is high\n3. List on our marketplace with your best price\n4. Direct buyer connection = No middlemen cost\n\nWhat crop are you planning to sell?"
+            return " **Getting Best Prices**:\n\n1. Visit our Prices page to check current market rates\n2. Harvest crops when market demand is high\n3. List on our marketplace with your best price\n4. Direct buyer connection = No middlemen cost\n\nWhat crop are you planning to sell?"
     
     # Keywords for farming/crops advice
     if any(word in message_lower for word in ['plant', 'grow', 'farm', 'crop', 'seed', 'soil', 'fertilizer']):
-        return "🌾 **Farming & Crop Advice**:\n\nFor best results:\n\n1. **Soil Preparation**: Test soil pH before planting\n2. **Organic Methods**: Use natural fertilizers (compost, vermicompost)\n3. **Water Management**: Proper irrigation based on weather and crop type\n4. **Pest Control**: Use integrated pest management techniques\n5. **Timing**: Plant according to your region's crop season\n\nWhich crop would you like guidance on? (Wheat, Rice, Cotton, etc.)"
+        return " **Farming & Crop Advice**:\n\nFor best results:\n\n1. **Soil Preparation**: Test soil pH before planting\n2. **Organic Methods**: Use natural fertilizers (compost, vermicompost)\n3. **Water Management**: Proper irrigation based on weather and crop type\n4. **Pest Control**: Use integrated pest management techniques\n5. **Timing**: Plant according to your region's crop season\n\nWhich crop would you like guidance on? (Wheat, Rice, Cotton, etc.)"
     
     # Keywords for marketplace/selling
     if any(word in message_lower for word in ['sell', 'list', 'buyer', 'marketplace', 'trade']):
-        return "🏪 **Selling on Kisan Mandi Marketplace**:\n\n1. **Create Listing**: Add crop details, quantity, quality grade\n2. **Upload Photos**: Show your produce clearly\n3. **Set Your Price**: You control pricing - no middlemen\n4. **Connect with Buyers**: Buyers browse and contact directly\n5. **Payment**: Secure payment through our platform\n\nReady to list your crops? Go to Marketplace → Add New Listing!"
+        return " **Selling on Kisan Mandi Marketplace**:\n\n1. **Create Listing**: Add crop details, quantity, quality grade\n2. **Upload Photos**: Show your produce clearly\n3. **Set Your Price**: You control pricing - no middlemen\n4. **Connect with Buyers**: Buyers browse and contact directly\n5. **Payment**: Secure payment through our platform\n\nReady to list your crops? Go to Marketplace → Add New Listing!"
     
     # Keywords for prices
     if any(word in message_lower for word in ['price', 'rate', 'cost', 'expensive', 'cheap', 'rate']):
-        return "💵 **Current Market Prices**:\n\nVisit our Prices page to see live commodity rates for:\n- Wheat\n- Rice\n- Cotton\n- Sugarcane\n- Tomato\n- And more!\n\nPrices vary by location and season. Check regularly to time your sales optimally!"
+        return " **Current Market Prices**:\n\nVisit our Prices page to see live commodity rates for:\n- Wheat\n- Rice\n- Cotton\n- Sugarcane\n- Tomato\n- And more!\n\nPrices vary by location and season. Check regularly to time your sales optimally!"
     
     # General greeting
-    return "👋 I'm your Kisan Mandi Agricultural Advisor! I can help you with:\n\n📊 **Selling Tips**: When & how to sell crops for best prices\n🌾 **Farming Advice**: Crop growing, soil care, pest management\n💰 **Market Prices**: Current rates for all crops\n🏪 **Marketplace Guide**: How to use our platform\n🌤️ **Weather Impact**: How weather affects crop price & quality\n\nWhat would you like to know?"
+    return " I'm your Kisan Mandi Agricultural Advisor! I can help you with:\n\n **Selling Tips**: When & how to sell crops for best prices\n🌾 **Farming Advice**: Crop growing, soil care, pest management\n💰 **Market Prices**: Current rates for all crops\n🏪 **Marketplace Guide**: How to use our platform\n🌤️ **Weather Impact**: How weather affects crop price & quality\n\nWhat would you like to know?"
 
 # ==================== STATIC ROUTES ====================
 @app.route('/')

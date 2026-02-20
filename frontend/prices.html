@@ -10,7 +10,7 @@
     <!-- Navigation -->
     <nav>
         <div class="navbar">
-            <a href="/" class="logo">🌾 Kisan Mandi</a>
+            <a href="/" class="logo"> Kisan Mandi</a>
             <ul class="nav-links">
                 <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="marketplace.html">Marketplace</a></li>
@@ -24,7 +24,7 @@
 
     <div class="container">
         <div class="card">
-            <div class="card-header">📊 Real-Time Crop Prices</div>
+            <div class="card-header"> Real-Time Crop Prices</div>
             <p>Current market prices from various sources (Demo Data + API Integration)</p>
         </div>
 
@@ -36,7 +36,7 @@
 
         <!-- Price Trends (Coming Soon) -->
         <div class="card">
-            <div class="card-header">📈 Price Trends (Coming Soon)</div>
+            <div class="card-header"> Price Trends (Coming Soon)</div>
             <p>Historical price data visualization will help you make better trading decisions.</p>
             <div style="background: #f0f0f0; padding: 2rem; border-radius: 5px; text-align: center;">
                 <p style="color: #95a5a6;">Graph will show price trends over time</p>
@@ -46,19 +46,19 @@
 
         <!-- Price Prediction -->
         <div class="card">
-            <div class="card-header">🔮 AI Price Prediction</div>
+            <div class="card-header"> AI Price Prediction</div>
             <p>Using historical data and seasonal trends, AI predicts future prices.</p>
             <div id="predictionsContainer"></div>
         </div>
 
         <!-- Data Sources -->
         <div class="card">
-            <div class="card-header">ℹ️ Data Sources</div>
+            <div class="card-header"> Data Sources</div>
             <ul style="list-style: none;">
-                <li>✅ <strong>AgriMarketNet API</strong> - Official agricultural prices from Indian government</li>
-                <li>✅ <strong>data.gov.in</strong> - Open government data on crop prices</li>
-                <li>✅ <strong>APMC Rates</strong> - Agricultural Produce Market Committee rates</li>
-                <li>📍 <strong>Location-Based Prices</strong> - Regional variations in crop prices</li>
+                <li> <strong>AgriMarketNet API</strong> - Official agricultural prices from Indian government</li>
+                <li> <strong>data.gov.in</strong> - Open government data on crop prices</li>
+                <li> <strong>APMC Rates</strong> - Agricultural Produce Market Committee rates</li>
+                <li> <strong>Location-Based Prices</strong> - Regional variations in crop prices</li>
             </ul>
         </div>
     </div>
@@ -79,7 +79,7 @@
             }
 
             currentUser = JSON.parse(userStr);
-            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
+            document.getElementById('userGreeting').textContent = ` ${currentUser.username}`;
             
             await loadPrices();
             showPredictions();
@@ -113,10 +113,10 @@
                     html += `
                         <tr style="border-bottom: 1px solid #ecf0f1;">
                             <td style="padding: 1rem;"><strong>${price.crop_name}</strong></td>
-                            <td style="padding: 1rem;">📍 ${price.location}</td>
+                            <td style="padding: 1rem;"> ${price.location}</td>
                             <td style="padding: 1rem; text-align: right; color: #2ecc71; font-weight: bold;">₹${price.price.toFixed(2)}</td>
                             <td style="padding: 1rem;">${formattedDate}</td>
-                            <td style="padding: 1rem; text-align: center;">📈</td>
+                            <td style="padding: 1rem; text-align: center;"></td>
                         </tr>
                     `;
                 });
@@ -151,7 +151,7 @@
                         <p style="margin: 0.5rem 0; color: #95a5a6;">Current: ₹${pred.current}</p>
                         <p style="margin: 0.5rem 0; color: #95a5a6;">Predicted: ₹${pred.predicted}</p>
                         <p style="margin: 0.5rem 0; color: ${isPositive ? '#27ae60' : '#c0392b'}; font-weight: bold;">
-                            ${isPositive ? '⬆️' : '⬇️'} ${pred.change}
+                             ${pred.change}
                         </p>
                         <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #95a5a6;">${pred.date}</p>
                     </div>

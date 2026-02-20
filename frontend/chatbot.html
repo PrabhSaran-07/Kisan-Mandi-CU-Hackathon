@@ -96,10 +96,10 @@
             }
 
             currentUser = JSON.parse(userStr);
-            document.getElementById('userGreeting').textContent = `👤 ${currentUser.username}`;
+            document.getElementById('userGreeting').textContent = ` ${currentUser.username}`;
 
             // Show welcome message
-            addMessage('bot', 'Hello! 👋 I\'m your AI Agricultural Advisor. I can help you with farming tips, crop prices, market trends, and questions about our Kisan Mandi platform. What would you like to know?', false);
+            addMessage('bot', 'Hello!  I\'m your AI Agricultural Advisor. I can help you with farming tips, crop prices, market trends, and questions about our Kisan Mandi platform. What would you like to know?', false);
         }
 
         function addMessage(sender, message, isHtml = false) {
@@ -162,7 +162,7 @@
 
             } catch (error) {
                 document.getElementById('loadingIndicator').style.display = 'none';
-                addMessage('bot', '❌ Error: ' + error.message);
+                addMessage('bot', ' Error: ' + error.message);
             }
         }
 
